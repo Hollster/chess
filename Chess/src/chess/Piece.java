@@ -5,6 +5,10 @@ public class Piece {
 	private Pattern pattern;
 	public int[] position;
 	
+	Piece(String name){
+		this.name = name;
+	}
+	
 	public void move(String newPosition) {
 		checkEntryValidity(newPosition);
 	}

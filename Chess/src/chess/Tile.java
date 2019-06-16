@@ -4,16 +4,15 @@ public class Tile extends Board{
 	//public boolean TileIsWhite;
 	//private boolean occupied;
 	private int[] idCoordinates;
-	private String emptyTile;
+	public String content;
 
 	
-	Tile(String inputCoordinates, boolean isWhiteTile){
-		if(isWhiteTile) {
-			this.emptyTile = "[    ]";
+	Tile(String tileColor){
+		if(tileColor == "white") {
+			this.content = "[    ]";
 		} else {
-			this.emptyTile = "{    }";
+			this.content = "{    }";
 		}
-		idCoordinates = getNumberCoordinates(inputCoordinates);
 	}
 	
 	private int[] getNumberCoordinates(String inputCoordinates) {
@@ -23,28 +22,25 @@ public class Tile extends Board{
 		return idCoordinates;
 	}
 	
-	public void updateTile(String inputCoordinates) {
-		idCoordinates = getNumberCoordinates(inputCoordinates);
-		if(isOccupied(idCoordinates)) {
-			removePieceFromTile();
-		} else {
-			addPieceToTile(idCoordinates);
-		}
+	public void updateTile(Piece piece) {
+			addPieceToTile(piece);
 	}
 	
 	private void removePieceFromTile(int[] idCoordinates) {
-		board[idCoordinates[0]][idCoordinates[1]] = this.emptyTile;
+	//	board[idCoordinates[0]][idCoordinates[1]] = this.emptyTile;
 	}
 	
-	private void addPieceToTile(int[] idCoordinates, String pieceName) {
-		board[idCoordinates[0]][idCoordinates[1]] = this.emptyTile.replace("    ", " " + pieceName + " ");
+	public Tile addPieceToTile(Piece piece) {
+		this.content = this.content.replace("    ", " " + piece.name + " ");
+		return this;
 	}
 	
 	private boolean isOccupied(int[] idCoordinates){
-		if (board[idCoordinates[0]][idCoordinates[1]] == this.emptyTile){
-			return false;
-		} else {
-			return true;
-		}
+//		if (board[idCoordinates[0]][idCoordinates[1]] == this.emptyTile){
+//			return false;
+//		} else {
+//			return true;
+//		}
+		return true;
 	}
 }
