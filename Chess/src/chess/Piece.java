@@ -1,20 +1,16 @@
 package chess;
 
 public class Piece {
-	public String name;
 	public String color;
 	private Pattern pattern;
+
+	Piece (){
+		this("");
+	}
 	
-	
-	Piece(String name, String color){
-		this(name);
+	Piece(String color){
 		this.color = color;
 	}
-	
-	Piece (String name){
-		this.name = name;
-	}
-	
 
 	
 	public void updateColor(String color) {

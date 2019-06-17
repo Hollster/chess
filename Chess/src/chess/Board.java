@@ -4,24 +4,40 @@ public class Board {
 	private int numberOfRows;
 	private int numberOfColumns;
 	protected Tile[][] board;
-	private Piece[] listOfPieces;
-	private String nameOfPawn;
+	private Piece[] whitePieces;
+	private Piece[] blackPieces;
 	
 	Board(){
 		numberOfRows = 8;
 		numberOfColumns = 8;
 		board = new Tile[numberOfRows][numberOfColumns];
-		listOfPieces = new Piece[]{Rook(), "Knight", "Bishop", "King", "Queen", "Bishop", "Knight", "Rook"};
-		nameOfPawn = "Pawn";
+		whitePieces = makePieces("white");
+		blackPieces = makePieces("black");
 	}
 	
+		private Piece[] makePieces(String color) {
+			Piece[] pieces = new Piece[2 * numberOfColumns];
+			pieces[0] = new Rook(color);
+			pieces[1] = new Knight(color);
+			pieces[2] = new Bishop(color);
+			pieces[3] = new Queen(color);
+			pieces[4] = new King(color);
+			pieces[5] = new Bishop(color);
+			pieces[6] = new Knight(color);
+			pieces[7] = new Rook(color);
+			for (int column = 0; column < numberOfColumns; column++) {
+				pieces[numberOfColumns + column] = new Pawn(color);
+			}
+			return pieces;
+		}
+		
 	public void makeBoard() {		
 		for (int row = 0; row < numberOfRows; row = row + 2) {
 			for (int column = 0; column < numberOfColumns; column = column + 2) {
 				board[row][column] = new Tile("white");
 			}
 			for (int column = 1; column < numberOfColumns; column = column + 2) {
-				board[row][column] = new Tile("white");
+				board[row][column] = new Tile("black");
 			}
 		}
 		for (int row = 1; row < numberOfRows; row = row + 2) {
@@ -29,44 +45,22 @@ public class Board {
 				board[row][column] = new Tile("black");
 			}
 			for (int column = 1; column < numberOfColumns; column = column + 2) {
-				board[row][column] = new Tile("black");
+				board[row][column] = new Tile("white");
 			}
 		}
 	}
 	
 	public void populateBoard() {
 		for (int column = 0; column < numberOfColumns; column ++) {
-			board[0][column].updateTile(new Piece(listOfPieces[column], "black"));
-			board[1][column].updateTile(new Piece(listOfPieces[column], "black"));
+			board[0][column].updateTile(blackPieces[numberOfColumns - 1 - column]);
+			board[1][column].updateTile(blackPieces[numberOfColumns + column]);
+			board[6][column].updateTile(whitePieces[numberOfColumns + column]);
+			board[7][column].updateTile(whitePieces[column]);
 		}
 	}
-	
-//	public void populateBoard() {
-//		Piece[][] whitePieces = new Piece[2][8]; 
-//		Piece[][] blackPieces = new Piece[2][8]; 
-//		generatePieces("white", whitePieces);
-//		generatePieces("black", blackPieces);
-//		populateRow(blackPieces, 0, 0);
-//		populateRow(blackPieces, 1, 1);
-//		populateRow(whitePieces, 7, 0);
-//		populateRow(whitePieces, 6, 1);
-//	}
-//	
-//	public void populateRow(Piece[][] pieces, int boardRow, int piecesRow) {
-//		for (int column = 0; column < numberOfColumns; column++) {	
-//			board[boardRow][column] = board[boardRow][column].addPieceToTile(pieces[piecesRow][column]);
-//		}	
-//	}
-//	
-//	private void generatePieces(String color, Piece[][] pieces) {
-//		for (int column = 0; column < numberOfColumns; column++) {
-//			pieces[0][column] = new Piece(color.substring(0, 1) + listOfPieces[column].substring(0, 1));
-//			pieces[1][column] = new Piece(color.substring(0, 1) + nameOfPawn.substring(0, 1));
-//		}
-//	}
-	
+
 	public void printBoard() {
-		System.out.print("     ");
+		System.out.print("    ");
 		for (int letter = 'A'; letter <= 'H'; letter++) {
 			System.out.print("   " + (char)letter + "  ");
 		} 

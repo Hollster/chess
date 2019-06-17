@@ -23,9 +23,9 @@ public class Tile {
 
 	public String getTileString () {
 		if (currentPiece != null) {
-			return colorIndicator[0] + "  " + currentPiece.color.charAt(0) + currentPiece.name.charAt(0) + "   " + colorIndicator[1];
+			return colorIndicator[0] + " " + currentPiece.color.charAt(0) + currentPiece.getClass().getName().charAt(6) + " " + colorIndicator[1];
 		} else {
-			return colorIndicator[0] + "     " + colorIndicator[1];
+			return colorIndicator[0] + "    " + colorIndicator[1];
 		}	
 	}
 	
