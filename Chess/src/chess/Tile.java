@@ -1,46 +1,53 @@
 package chess;
 
-public class Tile extends Board{
-	//public boolean TileIsWhite;
-	//private boolean occupied;
-	private int[] idCoordinates;
-	public String content;
+public class Tile {
 
+	private Piece currentPiece;
+	private String color;
+	public char[] colorIndicator;
 	
-	Tile(String tileColor){
-		if(tileColor == "white") {
-			this.content = "[    ]";
-		} else {
-			this.content = "{    }";
+	Tile(String color, Piece piece){
+		this(color);
+		this.currentPiece = piece;
+	}
+	
+	Tile(String color){
+		this.color = color;
+		if (color == "white") {
+			colorIndicator =  new char[]{'[', ']'};
+		}
+		else {
+			colorIndicator =  new char[]{'{', '}'};
 		}
 	}
-	
-	private int[] getNumberCoordinates(String inputCoordinates) {
-		idCoordinates = new int[2];
-		this.idCoordinates[0] = (int)inputCoordinates.charAt(0) - (int)'A'; 
-		this.idCoordinates[1] = (int)inputCoordinates.charAt(0); 
-		return idCoordinates;
+
+	public String getTileString () {
+		if (currentPiece != null) {
+			return colorIndicator[0] + "  " + currentPiece.color.charAt(0) + currentPiece.name.charAt(0) + "   " + colorIndicator[1];
+		} else {
+			return colorIndicator[0] + "     " + colorIndicator[1];
+		}	
 	}
 	
-	public void updateTile(Piece piece) {
-			addPieceToTile(piece);
+	public void setPiece(Piece piece) {
+		currentPiece = piece;
 	}
 	
-	private void removePieceFromTile(int[] idCoordinates) {
-	//	board[idCoordinates[0]][idCoordinates[1]] = this.emptyTile;
+	public void removePiece() {
+		currentPiece = null;
 	}
 	
-	public Tile addPieceToTile(Piece piece) {
-		this.content = this.content.replace("    ", " " + piece.name + " ");
-		return this;
+	public Piece getPiece() {
+		return currentPiece;
 	}
 	
-	private boolean isOccupied(int[] idCoordinates){
-//		if (board[idCoordinates[0]][idCoordinates[1]] == this.emptyTile){
-//			return false;
-//		} else {
-//			return true;
-//		}
-		return true;
+	public String updateTile() {
+		removePiece();
+		return getTileString();
+	}
+	
+	public String updateTile(Piece piece) {
+		setPiece(piece);
+		return getTileString();
 	}
 }

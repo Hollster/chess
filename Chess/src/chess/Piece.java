@@ -2,11 +2,23 @@ package chess;
 
 public class Piece {
 	public String name;
+	public String color;
 	private Pattern pattern;
-	public int[] position;
 	
-	Piece(String name){
+	
+	Piece(String name, String color){
+		this(name);
+		this.color = color;
+	}
+	
+	Piece (String name){
 		this.name = name;
+	}
+	
+
+	
+	public void updateColor(String color) {
+		this.color = color;
 	}
 	
 	public void move(String newPosition) {
