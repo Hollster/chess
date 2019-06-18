@@ -3,7 +3,7 @@ package chess;
 public class Board {
 	private int numberOfRows;
 	private int numberOfColumns;
-	protected Tile[][] board;
+	protected static Tile[][] board;
 	private Piece[] whitePieces;
 	private Piece[] blackPieces;
 	
@@ -48,6 +48,10 @@ public class Board {
 				board[row][column] = new Tile("white");
 			}
 		}
+	}
+	
+	public static Tile getTile(int[] coordinates) {
+		return board[coordinates[0]][coordinates[1]];
 	}
 	
 	public void populateBoard() {
