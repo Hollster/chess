@@ -34,18 +34,18 @@ public class Board {
 	public void makeBoard() {		
 		for (int row = 0; row < numberOfRows; row = row + 2) {
 			for (int column = 0; column < numberOfColumns; column = column + 2) {
-				board[row][column] = new Tile("white");
+				board[row][column] = new Tile(new int[] {row, column}, "white");
 			}
 			for (int column = 1; column < numberOfColumns; column = column + 2) {
-				board[row][column] = new Tile("black");
+				board[row][column] = new Tile(new int[] {row, column}, "black");
 			}
 		}
 		for (int row = 1; row < numberOfRows; row = row + 2) {
 			for (int column = 0; column < numberOfColumns; column = column + 2) {
-				board[row][column] = new Tile("black");
+				board[row][column] = new Tile(new int[] {row, column}, "black");
 			}
 			for (int column = 1; column < numberOfColumns; column = column + 2) {
-				board[row][column] = new Tile("white");
+				board[row][column] = new Tile(new int[] {row, column}, "white");
 			}
 		}
 	}

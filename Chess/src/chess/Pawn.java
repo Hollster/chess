@@ -8,6 +8,6 @@ public class Pawn extends Piece{
 
 	Pawn(String color){
 		super(color);
-		pattern = new Pattern (directions, limit, canJump);
+		super.pattern = new Pattern (directions, limit, canJump);
 	}
 }

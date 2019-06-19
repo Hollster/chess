@@ -1,17 +1,17 @@
 package chess;
 
 public class Tile {
-
 	private Piece currentPiece;
 	private String color;
 	public char[] colorIndicator;
+	private int[] coordinates;
 	
-	Tile(String color, Piece piece){
-		this(color);
+	Tile(int[] coordinates, String color, Piece piece){
+		this(coordinates, color);
 		this.currentPiece = piece;
 	}
 	
-	Tile(String color){
+	Tile(int[] coordinates, String color){
 		this.color = color;
 		if (color == "white") {
 			colorIndicator =  new char[]{'[', ']'};
@@ -19,6 +19,11 @@ public class Tile {
 		else {
 			colorIndicator =  new char[]{'{', '}'};
 		}
+		this.coordinates = coordinates;
+	}
+	
+	public int[] getCoordinates() {
+		return coordinates;
 	}
 
 	public String getTileString () {

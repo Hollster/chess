@@ -7,6 +7,6 @@ public class Bishop extends Piece{
 
 	Bishop(String color){
 		super(color);
-		Pattern pattern = new Pattern (directions, limit, canJump);
+		super.pattern = new Pattern (directions, limit, canJump);
 	}
 }

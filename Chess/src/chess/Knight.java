@@ -8,6 +8,6 @@ public class Knight extends Piece{
 
 	Knight(String color){
 		super(color);
-		pattern = new Pattern (directions, limit, canJump);
+		super.pattern = new Pattern (directions, limit, canJump);
 	}
 }

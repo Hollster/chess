@@ -15,15 +15,19 @@ public class MainChess {
 		myChessBoard.makeBoard();
 		myChessBoard.populateBoard();
 		myChessBoard.printBoard();
+		Tile firstTile;
+		Tile secondTile;
 		System.out.println();
 		while(!player1.hasLost || !player2.hasLost) {
 			toggleActivePlayer(player1, player2);
-			int[] originCoordinates = getFirstTile(player1, player2);
-			int[] targetCoordinates = getSecondTile(player1, player2);
-			if(isValidMove(firstTile.getPiece(), new int[] {7,7}, new int[]{6,6}))
-			//currentPiece.Pattern.isValid(coordinates1, coordinates2)
-			//check if other piece is in the way
-			// updateBoard
+			firstTile = getFirstTile(player1, player2);
+			do {
+				secondTile = getSecondTile(player1, player2);
+			} while(!isValidMove(firstTile.getPiece(), firstTile.getCoordinates(), secondTile.getCoordinates()));
+			secondTile.updateTile(firstTile.getPiece());
+				// sollte ich das überschriebene Piece löschen?
+			firstTile.updateTile();
+			myChessBoard.printBoard();
 		} 
 		PlayerInput.closeScanner();
 		System.out.println(getInactivePlayer(player1, player2).name + " wins!");	
@@ -52,7 +56,7 @@ public class MainChess {
 		int[]attemptedMovement = new int[] {originCoordinates[0] - targetCoordinates[0], originCoordinates[1] - targetCoordinates[1]};
 		int [] direction = currentPiece.pattern.movementIsValidPattern(attemptedMovement);
 		if (direction != null) {
-			return pieceIsInTheWay(direction, originCoordinates, targetCoordinates);
+			return !pieceIsInTheWay(direction, originCoordinates, targetCoordinates);
 		} else {
 			return false;
 		}

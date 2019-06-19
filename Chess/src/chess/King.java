@@ -7,6 +7,6 @@ public class King extends Piece{
 
 	King(String color){
 		super(color);
-		Pattern pattern = new Pattern (directions, limit, canJump);
+		super.pattern = new Pattern (directions, limit, canJump);
 	}	
 }
