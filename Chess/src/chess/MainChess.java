@@ -15,11 +15,12 @@ public class MainChess {
 		myChessBoard.makeBoard();
 		myChessBoard.populateBoard();
 		myChessBoard.printBoard();
+		System.out.println();
 		while(!player1.hasLost || !player2.hasLost) {
 			toggleActivePlayer(player1, player2);
-			getFirstTile(player1, player2);
-			// if quit: break
-			getSecondTile(player1, player2);
+			int[] originCoordinates = getFirstTile(player1, player2);
+			int[] targetCoordinates = getSecondTile(player1, player2);
+			if(isValidMove(firstTile.getPiece(), new int[] {7,7}, new int[]{6,6}))
 			//currentPiece.Pattern.isValid(coordinates1, coordinates2)
 			//check if other piece is in the way
 			// updateBoard
@@ -28,20 +29,60 @@ public class MainChess {
 		System.out.println(getInactivePlayer(player1, player2).name + " wins!");	
 	}
 	
+	private static boolean kingIsInCheck(Tile kingTile) {
+		//walk in each direction until you find either the edge or a piece
+		//if that piece is the opponent's piece, check if the king is in its pattern
+		//if the direction was cross and it was: rook, queen => check
+		//if the direction was diagonal and it was: bishop, queen => check
+		//if the direction was diagonal AND is within 1 and was: pawn => check
+		//if the direction is diagonal OR cross AND is within 1 and was: king => check
+		//check the 6 knight positions=> only if knight or king was moved
+		return false;
+	}
+	
+	//checkTheKnightPosition 
 
-	private static void getFirstTile(Player player1, Player player2) {
+	//updateKingPosition(){}
+	
+	private static void walkToPieceOrEdge() {
+		
+	}
+	
+	private static boolean isValidMove(Piece currentPiece, int[]originCoordinates, int[]targetCoordinates) {
+		int[]attemptedMovement = new int[] {originCoordinates[0] - targetCoordinates[0], originCoordinates[1] - targetCoordinates[1]};
+		int [] direction = currentPiece.pattern.movementIsValidPattern(attemptedMovement);
+		if (direction != null) {
+			return pieceIsInTheWay(direction, originCoordinates, targetCoordinates);
+		} else {
+			return false;
+		}
+	}
+	
+	private static boolean pieceIsInTheWay(int[] direction, int[] originCoordinates, int[] targetCoordinates) {
+		while (!Vectors.areEqual(originCoordinates, targetCoordinates)) {
+			if(Board.getTile(originCoordinates).getPiece() != null) {
+				return true;
+			}
+			originCoordinates = Vectors.addVectors(originCoordinates, direction);
+		}
+		return false;
+	}
+	
+	private static Tile getFirstTile(Player player1, Player player2) {
 		String firstPlayerInput;
 		do {
 			firstPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your piece to move!");
 		} while (!entryIsTile(firstPlayerInput) || !tileHasPiece(firstPlayerInput) || !pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(firstPlayerInput)).getPiece()));
+		return Board.getTile(inputToCoordinates(firstPlayerInput));
 	}
 	
-	private static void getSecondTile(Player player1, Player player2) {
+	private static Tile getSecondTile(Player player1, Player player2) {
 		String secondPlayerInput;
 		do {
 			secondPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your target tile!");
 		} while (!entryIsTile(secondPlayerInput) 
 				|| (tileHasPiece(secondPlayerInput) &&  pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(secondPlayerInput)).getPiece())));
+		return Board.getTile(inputToCoordinates(secondPlayerInput));
 	}
 	
 	// Create Players

@@ -2,7 +2,7 @@ package chess;
 
 public class Piece {
 	public String color;
-	private Pattern pattern;
+	public Pattern pattern;
 
 	Piece (){
 		this("");

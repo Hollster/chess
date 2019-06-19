@@ -1,17 +1,25 @@
 package chess;
 
 public class Pattern {
-	//private int[][] directions;
-	//private int limit;
-	//private boolean canJump;
+	int[][] directions;
+	int limit;
+	boolean canJump;
 	
 	Pattern(int[][] directions, int limit, boolean canJump){
-		
+		this.directions = directions;
+		this.limit = limit;
+		this.canJump = canJump;
 	}
 	
-	public void isValid(int[]originCoordinates, int[]targetCoordinates) {
-		// get difference of the two
-		// check if originCoordinates * pattern = targetCoordinates
-		// if !canJump, check if something is in the way => board? general method which checks other pieces
+	public int[] movementIsValidPattern(int[] attemptedMovement) {
+		for(int[] direction : directions ) {
+			for(int reach = -limit; reach <= limit; reach++) {
+				if(direction[0] * reach == attemptedMovement[0] && direction[1] * reach == attemptedMovement[1]) {
+					return direction;
+				}		
+			}
+		}
+		return null;
 	}
+	
 }
