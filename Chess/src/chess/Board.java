@@ -65,16 +65,35 @@ public class Board {
 
 	public void printBoard() {
 		System.out.print("    ");
-		for (int letter = 'A'; letter <= 'H'; letter++) {
-			System.out.print("   " + (char)letter + "  ");
+//		for (int letter = 'A'; letter <= 'H'; letter++) {
+//			System.out.print("   " + (char)letter + "  ");
+//		} 
+		for (int row = 1; row <= numberOfRows; row++) {
+			System.out.print("   " + row + "  ");
 		} 
 			System.out.print("\n");
 		for (int row = 0; row < numberOfRows; row++) {
-			System.out.print("  " + (row + 1) + "  ");
+			System.out.print("  " + (char)(row + MainChess.letterToNumberDifference) + "  ");
 			for (int column = 0; column < numberOfColumns; column++) {
 				System.out.print(board[row][column].getTileString());
 			}
 			System.out.print("\n");
 		}
+	}
+	
+	// mit nem 2d array überladen? kann man da auch so was wie this machen oder muss man da alles doppelt aufschreiben
+	
+	public void checkForNextPiece(Tile currentTile, int[] direction) {
+		// while currentTile + direction is within board
+			//check Tile if currentPiece == null
+				//if not: return Piece
+		// else return null
+	}
+	
+	public void checkForNextPiece(Tile currentTile, int[] direction, Tile targetTile) {
+		// while currentTile + direction is < targetTile
+			//check Tile if currentPiece == null
+				//if not: return Piece
+		// else return null
 	}
 }
