@@ -31,6 +31,9 @@ public class MainChess {
 		firstTile = getFirstTile(player1, player2);
 		do {
 			secondTile = getSecondTile(player1, player2);
+			if(secondTile == null) {
+				return;
+			}
 		} while(!isValidMove(firstTile.getPiece(), firstTile.getCoordinates(), secondTile.getCoordinates()));
 		secondTile.updateTile(firstTile.getPiece());
 		firstTile.updateTile(); // sollte ich das überschriebene Piece löschen?
@@ -109,6 +112,9 @@ public class MainChess {
 				//quit();
 			} else if ("REDO".equals(secondPlayerInput)) {
 				oneTurn(player1, player2);
+				return null;
+				//TODO
+				// hier ist der fehler, wenn das ausgeführt wird, kommt es ja wieder zurück, also müsste hier returned werden
 			}
 		} while (!entryIsTile(secondPlayerInput) 
 				|| (tileHasPiece(secondPlayerInput) &&  pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(secondPlayerInput)).getPiece())));
