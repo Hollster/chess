@@ -1,10 +1,13 @@
 package chess;
 
 public class Pattern {
-	private int[][] directions;
-	private int limit;
-	private boolean canJump;
+	//private int[][] directions;
+	//private int limit;
+	//private boolean canJump;
 	
+	Pattern(int[][] directions, int limit, boolean canJump){
+		
+	}
 	
 	public void isValid(int[]originCoordinates, int[]targetCoordinates) {
 		// get difference of the two
