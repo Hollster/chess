@@ -23,6 +23,19 @@ public class Vectors {
 		}
 	}
 	
+	public static int[] subtractVectors(int[] subtractee, int[] subtractor) {
+		if(vectorLengthIsValid(subtractee, subtractor)) {
+			int[] subtractedVector = new int[2];
+			subtractedVector[0] = subtractee[0] - subtractor[0];
+			subtractedVector[1] = subtractee[1] - subtractor[1];
+			return subtractedVector;
+		} else {
+			System.err.println("Should not have happened, vectorLength is screwed up, look in Vector class");
+			System.exit(2);
+			return null;
+		}
+	}
+	
 	
 	private static boolean vectorLengthIsValid(int[] vector1, int[] vector2) {
 		if (vector1.length == 2 || vector2.length == 2) {

@@ -13,7 +13,7 @@ public class Pattern {
 	
 	public int[] movementIsValidPattern(int[] attemptedMovement) {
 		for(int[] direction : directions ) {
-			for(int reach = -limit; reach <= limit; reach++) {
+			for(int reach = 1; reach <= limit; reach++) {
 				if(direction[0] * reach == attemptedMovement[0] && direction[1] * reach == attemptedMovement[1]) {
 					return direction;
 				}		

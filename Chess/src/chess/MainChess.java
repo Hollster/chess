@@ -15,23 +15,27 @@ public class MainChess {
 		myChessBoard.makeBoard();
 		myChessBoard.populateBoard();
 		myChessBoard.printBoard();
-		Tile firstTile;
-		Tile secondTile;
 		System.out.println();
 		while(!player1.hasLost || !player2.hasLost) {
 			toggleActivePlayer(player1, player2);
-			firstTile = getFirstTile(player1, player2);
-			do {
-				secondTile = getSecondTile(player1, player2);
-			} while(!isValidMove(firstTile.getPiece(), firstTile.getCoordinates(), secondTile.getCoordinates()));
-			secondTile.updateTile(firstTile.getPiece());
-				// sollte ich das überschriebene Piece löschen?
-			firstTile.updateTile();
+			oneTurn(player1, player2);
 			myChessBoard.printBoard();
 		} 
 		PlayerInput.closeScanner();
 		System.out.println(getInactivePlayer(player1, player2).name + " wins!");	
 	}
+	
+	private static void oneTurn(Player player1, Player player2) {
+		Tile firstTile;
+		Tile secondTile;
+		firstTile = getFirstTile(player1, player2);
+		do {
+			secondTile = getSecondTile(player1, player2);
+		} while(!isValidMove(firstTile.getPiece(), firstTile.getCoordinates(), secondTile.getCoordinates()));
+		secondTile.updateTile(firstTile.getPiece());
+		firstTile.updateTile(); // sollte ich das überschriebene Piece löschen?
+	}
+	
 	
 	private static boolean kingIsInCheck(Tile kingTile) {
 		//walk in each direction until you find either the edge or a piece
@@ -64,10 +68,10 @@ public class MainChess {
 	
 	private static boolean pieceIsInTheWay(int[] direction, int[] originCoordinates, int[] targetCoordinates) {
 		while (!Vectors.areEqual(originCoordinates, targetCoordinates)) {
+			originCoordinates = Vectors.subtractVectors(originCoordinates, direction);
 			if(Board.getTile(originCoordinates).getPiece() != null) {
 				return true;
 			}
-			originCoordinates = Vectors.addVectors(originCoordinates, direction);
 		}
 		return false;
 	}
@@ -76,6 +80,16 @@ public class MainChess {
 		String firstPlayerInput;
 		do {
 			firstPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your piece to move!");
+			if ("HELP".equals(firstPlayerInput)) {
+				//TODO
+				//Help.startHelp();
+			} else if ("DRAW".equals(firstPlayerInput)) {
+				//TODO
+				// draw();
+			} else if ("QUIT".equals(firstPlayerInput)) {
+				//TODO
+				//quit();
+			} 
 		} while (!entryIsTile(firstPlayerInput) || !tileHasPiece(firstPlayerInput) || !pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(firstPlayerInput)).getPiece()));
 		return Board.getTile(inputToCoordinates(firstPlayerInput));
 	}
@@ -84,6 +98,18 @@ public class MainChess {
 		String secondPlayerInput;
 		do {
 			secondPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your target tile!");
+			if ("HELP".equals(secondPlayerInput)) {
+				//TODO
+				//Help.startHelp();
+			} else if ("DRAW".equals(secondPlayerInput)) {
+				//TODO
+				// draw();
+			} else if ("QUIT".equals(secondPlayerInput)) {
+				//TODO
+				//quit();
+			} else if ("REDO".equals(secondPlayerInput)) {
+				oneTurn(player1, player2);
+			}
 		} while (!entryIsTile(secondPlayerInput) 
 				|| (tileHasPiece(secondPlayerInput) &&  pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(secondPlayerInput)).getPiece())));
 		return Board.getTile(inputToCoordinates(secondPlayerInput));
