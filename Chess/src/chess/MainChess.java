@@ -105,17 +105,7 @@ public class MainChess {
 		return Board.getTile(inputToCoordinates(secondPlayerInput));
 	}
 	
-	private static void checkSpecialPlayerInput(String firstPlayerInput) {
-		if ("HELP".equals(firstPlayerInput)) {
-			Help.startHelp();
-		} else if ("DRAW".equals(firstPlayerInput)) {
-			//TODO
-			// draw();
-		} else if ("QUIT".equals(firstPlayerInput)) {
-			//TODO
-			playerQuit();
-		} 
-	}
+
 	
 	// Create Players
 	public static Player makePlayer(int playerNumber, String playerColor, boolean isActive) {
@@ -198,6 +188,17 @@ public class MainChess {
 	}
 	
 		// Special Entry
+	private static void checkSpecialPlayerInput(String firstPlayerInput) {
+		if ("HELP".equals(firstPlayerInput)) {
+			Help.startHelp();
+		} else if ("DRAW".equals(firstPlayerInput)) {
+			//TODO
+			itsADraw();
+		} else if ("QUIT".equals(firstPlayerInput)) {
+			playerQuit();
+		} 
+	}
+	
 	private static void playerQuit() {
 		String doesPlayerWantToQuit = PlayerInput.getPlayerInput("Are you sure you want to quit? (yes / no)");
 		if("YES".equals(doesPlayerWantToQuit)) {
@@ -211,7 +212,29 @@ public class MainChess {
 		}
 	}
 	
-	// help
+	private static void itsADraw(){
+		if(checkDrawAnswers("Are you sure this is a draw? (yes / no)") 
+				&& checkDrawAnswers(getInactivePlayer().name + ", do you think this is a draw, too? (yes / no)")) {
+			System.out.println("It's a draw!");
+			System.exit(0);
+		} else {
+			System.out.println("Not a draw, return to game!");
+			return;
+		}
+	}
 	
-	// draw
+	private static boolean checkDrawAnswers(String message) {
+		String activePlayerDraw = PlayerInput.getPlayerInput(message);
+		if("YES".equals(activePlayerDraw)) {
+			return true;
+		} else if ("NO".equals(activePlayerDraw)) 
+		{
+			return false;
+		} else {			
+			System.out.println("Sorry, I did not get that. Please answer correctly!");
+			checkDrawAnswers("Is this a draw? (yes / no)");
+		}
+		return false;
+	}
+	
 }
