@@ -15,8 +15,8 @@ public class MainChess {
 		Board.printBoard();
 		System.out.println();
 		while(!player1.hasLost || !player2.hasLost) {
-			toggleActivePlayer(player1, player2);
-			oneTurn(player1, player2);
+			toggleActivePlayer();
+			oneTurn();
 			Board.printBoard();
 		} 
 		PlayerInput.closeScanner();
@@ -25,7 +25,7 @@ public class MainChess {
 	
 
 	
-	private static void oneTurn(Player player1, Player player2) {
+	private static void oneTurn() {
 		Tile firstTile;
 		Tile secondTile;
 		firstTile = getFirstTile(player1, player2);
@@ -97,7 +97,7 @@ public class MainChess {
 					+ "\nEnter redo to choose another tile and help if you need help");
 			checkSpecialPlayerInput(secondPlayerInput);
 			if ("REDO".equals(secondPlayerInput)) {
-				oneTurn(player1, player2);
+				oneTurn();
 				return null;
 			}
 		} while (!entryIsTile(secondPlayerInput) 
@@ -113,7 +113,7 @@ public class MainChess {
 			// draw();
 		} else if ("QUIT".equals(firstPlayerInput)) {
 			//TODO
-			//quit();
+			playerQuit();
 		} 
 	}
 	
@@ -123,7 +123,7 @@ public class MainChess {
 	}
 	
 	// isActive Parameter
-	public static void toggleActivePlayer(Player player1, Player player2) {
+	public static void toggleActivePlayer() {
 		if(player1.isActive) {
 			player1.isActive = false;
 			player2.isActive = true;
@@ -198,12 +198,16 @@ public class MainChess {
 	}
 	
 		// Special Entry
-	private static boolean playerHasQuitTheGame(Player activePlayer, String playerInput) {
-		if("q".equals(playerInput)) {
-			activePlayer.hasLost = true;
-			return true;
+	private static void playerQuit() {
+		String doesPlayerWantToQuit = PlayerInput.getPlayerInput("Are you sure you want to quit? (yes / no)");
+		if("YES".equals(doesPlayerWantToQuit)) {
+			System.out.println(getInactivePlayer().name + " wins!");
+			System.exit(0);
+		} else if ("NO".equals(doesPlayerWantToQuit)) {
+			return;
 		} else {
-			return false;
+			System.out.println("Sorry, I did not get that. Please answer correctly!");
+			playerQuit();
 		}
 	}
 	
