@@ -1,34 +1,38 @@
 package chess;
 
-import java.util.Scanner;
-
 public class Help {
-	private static String initialHelpMessage = "Welcome to the help function!\nIf you want to exit the help menu please press the q key.\nIf you want to know about the board, please press the b key.\nIf you want to know about the pieces abbreviations please press the p key. If you want to know how to enter a move, please enter the m key." ;
-	private static Scanner userInput = new Scanner(System.in);
+	private static String initialHelpMessage = "Welcome to the help function! ";
+	private static String options = "If you want to exit the help menu please press the q key.\nIf you want to know about the board, please press the b key.\nIf you want to know about the pieces abbreviations please press the p key.\nIf you want to know how to enter a move, please enter the m key.";
+
+	public static void startHelp() {
+		delegateHelpEntry(PlayerInput.getPlayerInput(initialHelpMessage + options));
+}
 	
-	public static void checkForHelp(String entry) {
-		if (entry.toUpperCase().equals("HELP")) {
-			System.out.println(initialHelpMessage);
-			
-		}
+	public static void startHelp(String message) {
+			delegateHelpEntry(PlayerInput.getPlayerInput(message));
 	}
 	
 	public static void delegateHelpEntry(String helpEntry) {
 		switch (helpEntry) {
-		case "b":
+		case "HELP":
+			break;
+		case "B":
 			board();
+			startHelp(options);
 			break;
-		case "p":
+		case "P":
 			pieces();
+			startHelp(options);
 			break;
-		case "m":
+		case "M":
 			move();
+			startHelp(options);
 			break;
-		case "q":
+		case "Q":
 			quitHelp();
 			break;
 		default:
-			System.out.println("Invalid Entry.\n" + initialHelpMessage);
+			startHelp("Invalid Entry.\n" + options);
 		}
 	}
 	
@@ -43,10 +47,10 @@ public class Help {
 	
 	public static void move() {
 		System.out.println("Please enter the new position in the following format: Letter, Number (A1 - I8)");
-		
 	}
 	
 	public static void quitHelp() {
-		
+		Board.printBoard();
+		return;
 	}
 }

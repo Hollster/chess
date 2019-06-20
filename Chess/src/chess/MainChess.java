@@ -1,8 +1,5 @@
 package chess;
 
-import java.util.Arrays;
-import java.util.Scanner;
-
 public class MainChess {
 	public static final int letterToNumberDifference = 65;
 	private static final int numberToNumberDifference = 49;
@@ -11,15 +8,14 @@ public class MainChess {
 		PlayerInput.makeScanner();
 		Player player1 = makePlayer(1, "white", false);
 		Player player2 = makePlayer(2, "black", true);
-		Board myChessBoard = new Board();
-		myChessBoard.makeBoard();
-		myChessBoard.populateBoard();
-		myChessBoard.printBoard();
+		Board.makeBoard();
+		Board.populateBoard();
+		Board.printBoard();
 		System.out.println();
 		while(!player1.hasLost || !player2.hasLost) {
 			toggleActivePlayer(player1, player2);
 			oneTurn(player1, player2);
-			myChessBoard.printBoard();
+			Board.printBoard();
 		} 
 		PlayerInput.closeScanner();
 		System.out.println(getInactivePlayer(player1, player2).name + " wins!");	
@@ -82,17 +78,10 @@ public class MainChess {
 	private static Tile getFirstTile(Player player1, Player player2) {
 		String firstPlayerInput;
 		do {
-			firstPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your piece to move!");
-			if ("HELP".equals(firstPlayerInput)) {
-				//TODO
-				//Help.startHelp();
-			} else if ("DRAW".equals(firstPlayerInput)) {
-				//TODO
-				// draw();
-			} else if ("QUIT".equals(firstPlayerInput)) {
-				//TODO
-				//quit();
-			} 
+			firstPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " 
+					+ getActivePlayer(player1, player2).name + "! Your move! Select your piece to move! "
+					+ "Enter help if you need help.");
+			checkSpecialPlayerInput(firstPlayerInput);
 		} while (!entryIsTile(firstPlayerInput) || !tileHasPiece(firstPlayerInput) || !pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(firstPlayerInput)).getPiece()));
 		return Board.getTile(inputToCoordinates(firstPlayerInput));
 	}
@@ -100,25 +89,28 @@ public class MainChess {
 	private static Tile getSecondTile(Player player1, Player player2) {
 		String secondPlayerInput;
 		do {
-			secondPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your target tile!");
-			if ("HELP".equals(secondPlayerInput)) {
-				//TODO
-				//Help.startHelp();
-			} else if ("DRAW".equals(secondPlayerInput)) {
-				//TODO
-				// draw();
-			} else if ("QUIT".equals(secondPlayerInput)) {
-				//TODO
-				//quit();
-			} else if ("REDO".equals(secondPlayerInput)) {
+			secondPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your target tile!" 
+					+ "\nEnter redo to choose another tile and help if you need help");
+			checkSpecialPlayerInput(secondPlayerInput);
+			if ("REDO".equals(secondPlayerInput)) {
 				oneTurn(player1, player2);
 				return null;
-				//TODO
-				// hier ist der fehler, wenn das ausgeführt wird, kommt es ja wieder zurück, also müsste hier returned werden
 			}
 		} while (!entryIsTile(secondPlayerInput) 
 				|| (tileHasPiece(secondPlayerInput) &&  pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(secondPlayerInput)).getPiece())));
 		return Board.getTile(inputToCoordinates(secondPlayerInput));
+	}
+	
+	private static void checkSpecialPlayerInput(String firstPlayerInput) {
+		if ("HELP".equals(firstPlayerInput)) {
+			Help.startHelp();
+		} else if ("DRAW".equals(firstPlayerInput)) {
+			//TODO
+			// draw();
+		} else if ("QUIT".equals(firstPlayerInput)) {
+			//TODO
+			//quit();
+		} 
 	}
 	
 	// Create Players

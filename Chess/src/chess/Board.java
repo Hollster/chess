@@ -1,21 +1,25 @@
 package chess;
 
+import java.util.ArrayList;
+
 public class Board {
-	private int numberOfRows;
-	private int numberOfColumns;
+	private static int numberOfRows;
+	private static int numberOfColumns;
 	protected static Tile[][] board;
-	private Piece[] whitePieces;
-	private Piece[] blackPieces;
+	private static ArrayList<Piece> whitePiecesOnBoard;
+	private static ArrayList<Piece> blackPiecesOnBoard;
+	private static ArrayList<Piece> fallenWhitePieces;
+	private static ArrayList<Piece> fallenBlackPieces;
 	
 	Board(){
 		numberOfRows = 8;
 		numberOfColumns = 8;
 		board = new Tile[numberOfRows][numberOfColumns];
-		whitePieces = makePieces("white");
-		blackPieces = makePieces("black");
+		whitePiecesOnBoard = makePieces("white");
+		blackPiecesOnBoard = makePieces("black");
 	}
 	
-		private Piece[] makePieces(String color) {
+		private ArrayList<Piece> makePieces(String color) {
 			Piece[] pieces = new Piece[2 * numberOfColumns];
 			pieces[0] = new Rook(color);
 			pieces[1] = new Knight(color);
@@ -31,7 +35,7 @@ public class Board {
 			return pieces;
 		}
 		
-	public void makeBoard() {		
+	public static void makeBoard() {		
 		for (int row = 0; row < numberOfRows; row = row + 2) {
 			for (int column = 0; column < numberOfColumns; column = column + 2) {
 				board[row][column] = new Tile(new int[] {row, column}, "white");
@@ -54,20 +58,17 @@ public class Board {
 		return board[coordinates[0]][coordinates[1]];
 	}
 	
-	public void populateBoard() {
+	public static void populateBoard() {
 		for (int column = 0; column < numberOfColumns; column ++) {
-			board[0][column].updateTile(blackPieces[numberOfColumns - 1 - column]);
-			board[1][column].updateTile(blackPieces[numberOfColumns + column]);
-			board[6][column].updateTile(whitePieces[numberOfColumns + column]);
-			board[7][column].updateTile(whitePieces[column]);
+			board[0][column].updateTile(blackPiecesOnBoard[numberOfColumns - 1 - column]);
+			board[1][column].updateTile(blackPiecesOnBoard[numberOfColumns + column]);
+			board[6][column].updateTile(whitePiecesOnBoard[numberOfColumns + column]);
+			board[7][column].updateTile(whitePiecesOnBoard[column]);
 		}
 	}
 
-	public void printBoard() {
+	public static void printBoard() {
 		System.out.print("    ");
-//		for (int letter = 'A'; letter <= 'H'; letter++) {
-//			System.out.print("   " + (char)letter + "  ");
-//		} 
 		for (int row = 1; row <= numberOfRows; row++) {
 			System.out.print("   " + row + "  ");
 		} 
