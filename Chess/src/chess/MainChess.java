@@ -1,13 +1,15 @@
 package chess;
 
 public class MainChess {
+	private static Player player1;
+	private static Player player2;
 	public static final int letterToNumberDifference = 65;
 	private static final int numberToNumberDifference = 49;
-
+	
 	public static void main(String[] args) {
 		PlayerInput.makeScanner();
-		Player player1 = makePlayer(1, "white", false);
-		Player player2 = makePlayer(2, "black", true);
+		player1 = makePlayer(1, "white", false);
+		player2 = makePlayer(2, "black", true);
 		Board.makeBoard();
 		Board.populateBoard();
 		Board.printBoard();
@@ -18,8 +20,10 @@ public class MainChess {
 			Board.printBoard();
 		} 
 		PlayerInput.closeScanner();
-		System.out.println(getInactivePlayer(player1, player2).name + " wins!");	
+		System.out.println(getInactivePlayer().name + " wins!");	
 	}
+	
+
 	
 	private static void oneTurn(Player player1, Player player2) {
 		Tile firstTile;
@@ -78,18 +82,18 @@ public class MainChess {
 	private static Tile getFirstTile(Player player1, Player player2) {
 		String firstPlayerInput;
 		do {
-			firstPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " 
-					+ getActivePlayer(player1, player2).name + "! Your move! Select your piece to move! "
+			firstPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(), "Hey, " 
+					+ getActivePlayer().name + "! Your move! Select your piece to move! "
 					+ "Enter help if you need help.");
 			checkSpecialPlayerInput(firstPlayerInput);
-		} while (!entryIsTile(firstPlayerInput) || !tileHasPiece(firstPlayerInput) || !pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(firstPlayerInput)).getPiece()));
+		} while (!entryIsTile(firstPlayerInput) || !tileHasPiece(firstPlayerInput) || !pieceBelongsToActivePlayer(getActivePlayer(), Board.getTile(inputToCoordinates(firstPlayerInput)).getPiece()));
 		return Board.getTile(inputToCoordinates(firstPlayerInput));
 	}
 	
 	private static Tile getSecondTile(Player player1, Player player2) {
 		String secondPlayerInput;
 		do {
-			secondPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(player1, player2), "Hey, " + getActivePlayer(player1, player2).name + "! Your move! Select your target tile!" 
+			secondPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(), "Hey, " + getActivePlayer().name + "! Your move! Select your target tile!" 
 					+ "\nEnter redo to choose another tile and help if you need help");
 			checkSpecialPlayerInput(secondPlayerInput);
 			if ("REDO".equals(secondPlayerInput)) {
@@ -97,7 +101,7 @@ public class MainChess {
 				return null;
 			}
 		} while (!entryIsTile(secondPlayerInput) 
-				|| (tileHasPiece(secondPlayerInput) &&  pieceBelongsToActivePlayer(getActivePlayer(player1, player2), Board.getTile(inputToCoordinates(secondPlayerInput)).getPiece())));
+				|| (tileHasPiece(secondPlayerInput) &&  pieceBelongsToActivePlayer(getActivePlayer(), Board.getTile(inputToCoordinates(secondPlayerInput)).getPiece())));
 		return Board.getTile(inputToCoordinates(secondPlayerInput));
 	}
 	
@@ -129,7 +133,7 @@ public class MainChess {
 		}
 	}
 	
-	public static Player getActivePlayer(Player player1, Player player2) {
+	public static Player getActivePlayer() {
 		if(player1.isActive) {
 			return player1;
 		} else {
@@ -137,7 +141,7 @@ public class MainChess {
 		}
 	}
 	
-	public static Player getInactivePlayer(Player player1, Player player2) {
+	public static Player getInactivePlayer() {
 		if(player1.isActive) {
 			return player2;
 		} else {
