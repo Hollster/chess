@@ -10,6 +10,14 @@ public class Vectors {
 		}
 	}
 	
+	public static int[] multiplyIntWithVector(int factor, int[] vector) {
+		int[] returnVector = new int[vector.length];
+		for(int i = 0; i < vector.length; i++) {
+			returnVector[i] = factor * vector[i];
+		}
+		return returnVector;
+	}
+	
 	public static int[] addVectors(int[] vector1, int[] vector2) {
 		if(vectorLengthIsValid(vector1, vector2)) {
 			int[] addedVector = new int[2];

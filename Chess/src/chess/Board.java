@@ -1,11 +1,15 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Board {
 	public static int numberOfRows = 8;
 	public static int numberOfColumns = 8;
 	protected static Tile[][] board = new Tile[numberOfRows][numberOfColumns];
+	public static HashSet<int[]> whitePossibleMoves;
+	public static HashSet<int[]> blackPossibleMoves;
 
 		
 	public static void makeBoard() {		
@@ -55,19 +59,37 @@ public class Board {
 		}
 	}
 	
-	// mit nem 2d array überladen? kann man da auch so was wie this machen oder muss man da alles doppelt aufschreiben
+	//TODO
+	//checkForCheck
+	// for each king, get the position (how? das muss iwie extra getrackt werden)
+	// vergleiche die position des königs mit allen möglichen gegnerpositionen
+	// falls drin: schach
+	//	falls der eigene könig: ist nicht gülitig
 	
-	public void checkForNextPiece(Tile currentTile, int[] direction) {
-		// while currentTile + direction is within board
-			//check Tile if currentPiece == null
-				//if not: return Piece
-		// else return null
+	//TODO
+	//update KingPosition
+	
+	//TODO
+	private void updateLists() {
+		for (int row = 0; row < numberOfRows; row++) {
+			for (int column = 0; column < numberOfColumns; column++) {
+				if(getTile(new int[] {row, column}) != null) {
+					getTile(new int[] {row, column}).getPiece().updatePossibleTargetLocations(new int[] {row, column});
+					whitePossiblemoves = // go through list of 
+				}
+			}
+		}
 	}
+	//nach jedem einzelnen Zug muss die Liste der jeweiligen Figuren geupdatet werden
+	// und im Set zusammengeführt werden // ODER // es gibt für Bauen etwas spezielles
+	// das wäre wahrshcienlich besser weil dann muss nicht jedes mal gerechnet werden und falls ja 
+	// wieder alles zurückgenommen werden
+	// pawn movement liste muss jedes mal geupdatet werden
+	// 1) gucken ob der move valid ist
+	// a) ist er in dem gegnerPossibleMovesFeld (das hat für Pawns nur die schrägen moves)
+	// b) falls ja, ist der zug nicht erlaubt
+	// c) falls nein, ist der zug erlaubt und der könig wird dort platziert, alle anderen spieler und die 
+	// große liste müssen geupdatet werden
 	
-	public void checkForNextPiece(Tile currentTile, int[] direction, Tile targetTile) {
-		// while currentTile + direction is < targetTile
-			//check Tile if currentPiece == null
-				//if not: return Piece
-		// else return null
 	}
 }
