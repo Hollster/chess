@@ -30,6 +30,7 @@ public class Piece {
 	}
 	
 	public void updatePossibleTargetLocations(){
+		possibleTargetLocations.clear();
 		int reach = 1;
 		int[] possibleLocation; 
 		for (int[] currentDirection : directions) {

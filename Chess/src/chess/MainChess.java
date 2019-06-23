@@ -53,6 +53,7 @@ public class MainChess {
 	private static void move(Piece piece) {
 		String secondPlayerInput;
 		int[] enteredCoordinates;
+		int[] previousPosition = piece.position;
 		do {
 			secondPlayerInput = PlayerInput.getPlayerInput(getPlayer(true), "Hey, " + getPlayer(true).name + "! Your move! Select your target tile!" 
 					+ "\nEnter redo to choose another tile and help if you need help");
@@ -66,6 +67,7 @@ public class MainChess {
 		updatePlayersTargetLocations(getPlayer(false));
 		if(inCheck(getPlayer(true), getPlayer(false))) {
 			System.out.println("Not valid, you would be in check");
+			piece.position = previousPosition;
 			move(piece);
 		}
 		
