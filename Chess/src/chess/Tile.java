@@ -36,7 +36,7 @@ public class Tile {
 	
 	public void setPiece(Piece piece) {
 		if (currentPiece != null) {
-			MainChess.getActivePlayer().removePiece(piece);
+			MainChess.getPlayer(true).removePiece(piece);
 		}
 		currentPiece = piece;
 	}

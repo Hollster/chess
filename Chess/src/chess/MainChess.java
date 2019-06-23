@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 public class MainChess {
 	private static Player player1;
 	private static Player player2;
@@ -10,102 +12,137 @@ public class MainChess {
 		PlayerInput.makeScanner();
 		player1 = makePlayer(1, "white", false);
 		player2 = makePlayer(2, "black", true);
-		Board.makeBoard();
+		initializePossiblePositions();
 		Board.populateBoard();
 		Board.printBoard();
 		System.out.println();
 		while(!player1.hasLost || !player2.hasLost) {
 			toggleActivePlayer();
 			oneTurn();
+			Board.populateBoard();
 			Board.printBoard();
 		} 
 		PlayerInput.closeScanner();
-		System.out.println(getInactivePlayer().name + " wins!");	
+		System.out.println(getPlayer(false).name + " wins!");	
 	}
 	
-
-	
-	private static void oneTurn() {
-		Tile firstTile;
-		Tile secondTile;
-		firstTile = getFirstTile(player1, player2);
-		do {
-			secondTile = getSecondTile(player1, player2);
-			if(secondTile == null) {
-				return;
-			}
-		} while(!isValidMove(firstTile.getPiece(), firstTile.getCoordinates(), secondTile.getCoordinates()));
-		secondTile.updateTile(firstTile.getPiece());
-		firstTile.updateTile(); // sollte ich das überschriebene Piece löschen?
-	}
-	
-	
-	private static boolean kingIsInCheck(Tile kingTile) {
-		//walk in each direction until you find either the edge or a piece
-		//if that piece is the opponent's piece, check if the king is in its pattern
-		//if the direction was cross and it was: rook, queen => check
-		//if the direction was diagonal and it was: bishop, queen => check
-		//if the direction was diagonal AND is within 1 and was: pawn => check
-		//if the direction is diagonal OR cross AND is within 1 and was: king => check
-		//check the 6 knight positions=> only if knight or king was moved
-		return false;
-	}
-	
-	//checkTheKnightPosition 
-
-	//updateKingPosition(){}
-	
-	private static void walkToPieceOrEdge() {
-		
-	}
-	
-	private static boolean isValidMove(Piece currentPiece, int[]originCoordinates, int[]targetCoordinates) {
-		int[]attemptedMovement = new int[] {originCoordinates[0] - targetCoordinates[0], originCoordinates[1] - targetCoordinates[1]};
-		int [] direction = currentPiece.pattern.movementIsValidPattern(attemptedMovement);
-		if (direction != null) {
-			return !pieceIsInTheWay(direction, originCoordinates, targetCoordinates);
-		} else {
-			return false;
+	private static void initializePossiblePositions() {
+		for(Piece piece : player1.getPiecesOnBoard()) {
+			piece.updatePossibleTargetLocations();
+		}
+		for(Piece piece : player2.getPiecesOnBoard()) {
+			piece.updatePossibleTargetLocations();
 		}
 	}
 	
-	private static boolean pieceIsInTheWay(int[] direction, int[] originCoordinates, int[] targetCoordinates) {
-		while (!Vectors.areEqual(originCoordinates, targetCoordinates)) {
-			originCoordinates = Vectors.subtractVectors(originCoordinates, direction);
-			if(Board.getTile(originCoordinates).getPiece() != null) {
+	
+		
+	private static void oneTurn() {
+		Piece chosenPiece = getChosenPiece();
+		move(chosenPiece);
+		//TODO 
+		// hier liegt der Fehler, überlegen was passiert, wenn der Spieler ins Schach kommt undnen neuer Zug anfängt
+		// was wird dann nicht vernünftig geupdated
+		updatePlayersTargetLocations(getPlayer(true));
+		if(inCheck(getPlayer(false), getPlayer(true))) {
+			System.out.println("CHECK!");
+		}
+	}
+
+	
+	private static void move(Piece piece) {
+		String secondPlayerInput;
+		int[] enteredCoordinates;
+		do {
+			secondPlayerInput = PlayerInput.getPlayerInput(getPlayer(true), "Hey, " + getPlayer(true).name + "! Your move! Select your target tile!" 
+					+ "\nEnter redo to choose another tile and help if you need help");
+			checkSpecialPlayerInput(secondPlayerInput);
+			if ("REDO".equals(secondPlayerInput)) {
+				oneTurn();
+			}
+			enteredCoordinates = entryToCoordinates(secondPlayerInput);
+		} while(!moveIsValid(piece, enteredCoordinates));
+		piece.position = enteredCoordinates;
+		updatePlayersTargetLocations(getPlayer(false));
+		if(inCheck(getPlayer(true), getPlayer(false))) {
+			System.out.println("Not valid, you would be in check");
+			move(piece);
+		}
+		
+		// hier sind wir jetzt wenn der move valid ist
+		// +++++++++++++jetzt müssen wir die position von dem piece updaten 
+		// +++++++++++++++++und die possible target locations von dem gegner 
+		//+++++++++++++++und gucken ob der eigene könig im schach steht. falls ja: müssen wir ne warnung ausgeben und 
+		// ++++++++++++++++++nochmal sagen, dass der move nicht geht, weil wir im schach stehen würden
+		// ++++++++++++++++dann passiert move nochmal
+		// ++++++++++++weil jedes mal nach dem move, der gegner wieder neu kalkuliert, müssen wir da nichts zurücksetzen
+		// ++++++++++++das bleibt erst gleich, wenn der move valid ist
+		// ist das so, updaten wir auch die possible targetcoordinates von dem eigenen spieler
+		// und gucken als nächstes, ob der andere könig im schach steht
+		// falls ja, geben wir eine warnung an den gegner aus.
+		// und da
+	}
+	
+	private static boolean inCheck(Player activePlayer, Player opponent) {
+		int[] kingPosition = activePlayer.getKingPosition();
+		for (Piece piece : opponent.getPiecesOnBoard()) {
+			for (int[] position : piece.possibleTargetLocations) {
+				if(Vectors.areEqual(kingPosition, position)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private static void updatePlayersTargetLocations(Player player) {
+		for(Piece piece : player.getPiecesOnBoard()) {
+			piece.updatePossibleTargetLocations();
+		}
+	}
+	
+	private static boolean moveIsValid(Piece piece, int[] targetCoordinates) {
+		for(int[] possibleTargetLocation : piece.possibleTargetLocations) {
+			if(Vectors.areEqual(targetCoordinates, possibleTargetLocation)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	private static Tile getFirstTile(Player player1, Player player2) {
+	
+	private static Piece getChosenPiece() {
 		String firstPlayerInput;
+		Piece chosenPiece = null;
 		do {
-			firstPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(), "Hey, " 
-					+ getActivePlayer().name + "! Your move! Select your piece to move! "
+			firstPlayerInput = PlayerInput.getPlayerInput(getPlayer(true), "Hey, " 
+					+ getPlayer(true).name + "! Your move! Select your piece to move! "
 					+ "Enter help if you need help.");
 			checkSpecialPlayerInput(firstPlayerInput);
-		} while (!entryIsTile(firstPlayerInput) || !tileHasPiece(firstPlayerInput) || !pieceBelongsToActivePlayer(getActivePlayer(), Board.getTile(inputToCoordinates(firstPlayerInput)).getPiece()));
-		return Board.getTile(inputToCoordinates(firstPlayerInput));
+			chosenPiece = getPieceFromValidEntry(firstPlayerInput);
+		} while (chosenPiece == null);
+		return  chosenPiece;
 	}
 	
-	private static Tile getSecondTile(Player player1, Player player2) {
-		String secondPlayerInput;
-		do {
-			secondPlayerInput = PlayerInput.getPlayerInput(getActivePlayer(), "Hey, " + getActivePlayer().name + "! Your move! Select your target tile!" 
-					+ "\nEnter redo to choose another tile and help if you need help");
-			checkSpecialPlayerInput(secondPlayerInput);
-			if ("REDO".equals(secondPlayerInput)) {
-				oneTurn();
-				return null;
+	private static Piece getPieceFromValidEntry(String playerEntry) {
+		if(entryIsOnBoard(playerEntry)) {
+			for(Piece piece : getPlayer(true).getPiecesOnBoard()) {
+				if (Vectors.areEqual(piece.position, entryToCoordinates(playerEntry))){
+					return piece;
+				}
 			}
-		} while (!entryIsTile(secondPlayerInput) 
-				|| (tileHasPiece(secondPlayerInput) &&  pieceBelongsToActivePlayer(getActivePlayer(), Board.getTile(inputToCoordinates(secondPlayerInput)).getPiece())));
-		return Board.getTile(inputToCoordinates(secondPlayerInput));
+			return null;
+		} else {
+			return null;
+		}
 	}
 	
-
+	private static int[] entryToCoordinates(String playerEntry) {
+		int[]coordinates = new int[2];
+		coordinates[0] = (int)playerEntry.charAt(0) - letterToNumberDifference;
+		coordinates[1] = Board.numberOfRows - Character.getNumericValue(playerEntry.charAt(1));
+		return coordinates;
+	}
 	
 	// Create Players
 	public static Player makePlayer(int playerNumber, String playerColor, boolean isActive) {
@@ -114,34 +151,29 @@ public class MainChess {
 	
 	// isActive Parameter
 	public static void toggleActivePlayer() {
-		if(player1.isActive) {
-			player1.isActive = false;
-			player2.isActive = true;
+		player1.toggleActivity();
+		player2.toggleActivity();
+	}
+	
+	public static Player getPlayer(String color) {
+		if ("white".equals(color)){
+			return player1;
+		} else if ("black".equals(color)) {
+			return player2;
 		} else {
-			player1.isActive = true;
-			player2.isActive = false;
+			System.err.println("Something went wrong with fetching the player, look into getPlayer in MainChess");
+			System.exit(4);
+			return player1;
 		}
 	}
 	
-	public static Player getActivePlayer() {
-		if(player1.isActive) {
-			return player1;
-		} else {
-			return player2;
-		}
-	}
-	
-	public static Player getInactivePlayer() {
-		if(player1.isActive) {
-			return player2;
-		} else {
-			return player1;
-		}
+	public static Player getPlayer(boolean activeIsTrue) {
+		return player1.isActive == activeIsTrue ? player1 : player2;
 	}
 	
 	// Evaluate Entry Validity
 		// General
-	private static boolean entryIsTile(String playerInput) {
+	private static boolean entryIsOnBoard(String playerInput) {
 		if(entryHasCorrectLength(playerInput)) {
 			char letter = playerInput.charAt(0);
 			char number = playerInput.charAt(1);
@@ -160,15 +192,6 @@ public class MainChess {
 			return true;
 		} else {
 			return false;
-		}
-	}
-	
-		//Tile and Piece examination
-	private static boolean tileHasPiece(String playerInput) {
-		if (Board.getTile(inputToCoordinates(playerInput)).getPiece() == null) {
-			return false;
-		} else {
-			return true;
 		}
 	}
 	
@@ -202,7 +225,7 @@ public class MainChess {
 	private static void playerQuit() {
 		String doesPlayerWantToQuit = PlayerInput.getPlayerInput("Are you sure you want to quit? (yes / no)");
 		if("YES".equals(doesPlayerWantToQuit)) {
-			System.out.println(getInactivePlayer().name + " wins!");
+			System.out.println(getPlayer(false).name + " wins!");
 			System.exit(0);
 		} else if ("NO".equals(doesPlayerWantToQuit)) {
 			return;
@@ -214,7 +237,7 @@ public class MainChess {
 	
 	private static void itsADraw(){
 		if(checkDrawAnswers("Are you sure this is a draw? (yes / no)") 
-				&& checkDrawAnswers(getInactivePlayer().name + ", do you think this is a draw, too? (yes / no)")) {
+				&& checkDrawAnswers(getPlayer(false).name + ", do you think this is a draw, too? (yes / no)")) {
 			System.out.println("It's a draw!");
 			System.exit(0);
 		} else {

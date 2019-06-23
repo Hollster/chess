@@ -9,15 +9,15 @@ public class Piece {
 	protected int limitOfReach;
 	protected int[][] directions;
 	ArrayList<int[]> possibleTargetLocations;
-	protected boolean canJump;
 
-//	Piece (){
-//		this("", null);
-//	}
+	Piece(){
+		possibleTargetLocations = new ArrayList<int[]>();
+	}
 	
-
-	Piece(String color){
+	Piece(int[] position, String color){
+		this.position = position;
 		this.color = color;
+		possibleTargetLocations = new ArrayList<int[]>();
 	}
 
 
@@ -25,22 +25,36 @@ public class Piece {
 		return possibleTargetLocations;
 	}
 	
-	public void updatePossibleTargetLocations(int[] position){
-		int[] possibleLocation = new int[] {0, 0};
-		for (int[] direction : directions) {
-			for (int reach = 1; reach <= limitOfReach && possibleLocation[0] < 8 && possibleLocation[1] < 8; reach++) {
-				possibleLocation = Vectors.addVectors(position, Vectors.multiplyIntWithVector(reach, direction));
-				if(Board.getTile(possibleLocation).getPiece() != null) {
-					if(Board.getTile(possibleLocation).getPiece().color.equalsIgnoreCase(color)) {
-						break;
-					} else {
+	private String getOtherColor(String color) {
+		return "white".equals(color) ? "black" : "white";
+	}
+	
+	public void updatePossibleTargetLocations(){
+		int reach = 1;
+		int[] possibleLocation; 
+		for (int[] currentDirection : directions) {
+			possibleLocation = Vectors.addVectors(position, Vectors.multiplyIntWithVector(reach, currentDirection));
+			CheckThisDirection:
+				for(reach = 1; reach <= limitOfReach; reach++) {
+					possibleLocation = Vectors.addVectors(position, Vectors.multiplyIntWithVector(reach, currentDirection));
+					if((possibleLocation[0] 
+							< Board.numberOfColumns && possibleLocation[0] >= 0) 
+					&& (possibleLocation[1] 
+							< Board.numberOfRows && possibleLocation[1] >= 0)) {
+						for(Piece piece : MainChess.getPlayer(color).getPiecesOnBoard()) {
+							if (Vectors.areEqual(piece.position , possibleLocation)) {
+								break CheckThisDirection;
+							}
+						}
+						for(Piece piece : MainChess.getPlayer(getOtherColor(color)).getPiecesOnBoard()) {
+							if (Vectors.areEqual(piece.position , possibleLocation)) {
+								possibleTargetLocations.add(possibleLocation);
+								break CheckThisDirection;
+							}
+						}
 						possibleTargetLocations.add(possibleLocation);
-						break;
 					}
-				} else {
-					possibleTargetLocations.add(possibleLocation);
 				}
-			} 
 		}
 	}
 }

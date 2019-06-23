@@ -3,11 +3,13 @@ package chess;
 public class Pawn extends Piece{
 
 	
-	Pawn(String color){
-		super(color);
-		super.canJump = false;
+	Pawn(int[] position, String color){
+		super.position = position;
 		super.limitOfReach = 1;
-		super.directions = new int[][] {{0,1}, {1, 1},  {-1, 1}};
-		super.pattern = new Pattern (directions, limitOfReach, canJump);
+		this.color = color;
+		super.color = color;
+		super.directions = "black".equals(super.color) ? 
+				new int[][] {{0,1}, {1, 1},  {-1, 1}} 
+				: new int[][] {{0,-1}, {1, -1},  {-1, -1}};
 	}
 }
