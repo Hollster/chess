@@ -40,9 +40,6 @@ public class MainChess {
 	private static void oneTurn() {
 		Piece chosenPiece = getChosenPiece();
 		move(chosenPiece);
-		//TODO 
-		// hier liegt der Fehler, überlegen was passiert, wenn der Spieler ins Schach kommt undnen neuer Zug anfängt
-		// was wird dann nicht vernünftig geupdated
 		updatePlayersTargetLocations(getPlayer(true));
 		if(inCheck(getPlayer(false), getPlayer(true))) {
 			System.out.println("CHECK!");
@@ -69,20 +66,19 @@ public class MainChess {
 			System.out.println("Not valid, you would be in check");
 			piece.position = previousPosition;
 			move(piece);
+			return;
 		}
-		
-		// hier sind wir jetzt wenn der move valid ist
-		// +++++++++++++jetzt müssen wir die position von dem piece updaten 
-		// +++++++++++++++++und die possible target locations von dem gegner 
-		//+++++++++++++++und gucken ob der eigene könig im schach steht. falls ja: müssen wir ne warnung ausgeben und 
-		// ++++++++++++++++++nochmal sagen, dass der move nicht geht, weil wir im schach stehen würden
-		// ++++++++++++++++dann passiert move nochmal
-		// ++++++++++++weil jedes mal nach dem move, der gegner wieder neu kalkuliert, müssen wir da nichts zurücksetzen
-		// ++++++++++++das bleibt erst gleich, wenn der move valid ist
-		// ist das so, updaten wir auch die possible targetcoordinates von dem eigenen spieler
-		// und gucken als nächstes, ob der andere könig im schach steht
-		// falls ja, geben wir eine warnung an den gegner aus.
-		// und da
+		capture(getPlayer(false), piece.position);
+		updatePlayersTargetLocations(getPlayer(false));
+	}
+	
+	private static void capture(Player opponent, int[] positionOfMovedPiece) {
+		for(Piece piece : opponent.getPiecesOnBoard()) {
+			if (Vectors.areEqual(piece.position, positionOfMovedPiece)) {
+				opponent.removePiece(piece);
+				return;
+			}
+		}
 	}
 	
 	private static boolean inCheck(Player activePlayer, Player opponent) {
@@ -109,6 +105,7 @@ public class MainChess {
 				return true;
 			}
 		}
+		System.out.println("Sorry, you can't go there. Either something is in the way or the movement pattern does not match");
 		return false;
 	}
 	
@@ -133,8 +130,10 @@ public class MainChess {
 					return piece;
 				}
 			}
+			System.out.println("You do not have a figure here. Please choose again.");
 			return null;
 		} else {
+			System.out.println("This is not a valid entry. Please enter in this format: LetterNumber");
 			return null;
 		}
 	}

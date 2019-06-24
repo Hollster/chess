@@ -66,12 +66,17 @@ public class Player {
 		return fallenPieces;
 	}
 	
-	public void setPiecesOnBoard(ArrayList<Piece> piecesOnBoard){
-		this.fallenPieces = piecesOnBoard;
+	public void setPiecesOnBoard(ArrayList<Piece> fallenPieces){
+		this.fallenPieces = fallenPieces;
 	}
 	
 	public void removePiece(Piece currentpiece) {
-		piecesOnBoard.remove(currentpiece);
+		for (int i = 0; i < piecesOnBoard.size(); i++) {
+			if(Vectors.areEqual(currentpiece.position, piecesOnBoard.get(i).position)) {
+				piecesOnBoard.remove(i);
+				return;
+			}
+		}
 	}
 	
 	public void addPiece(Piece currentpiece) {
