@@ -29,6 +29,10 @@ public class Piece {
 		return "white".equals(color) ? "black" : "white";
 	}
 	
+//	public void updatePossibleTargetLocations(String input){
+//		updatePossibleTargetLocations();
+//	}
+//	
 	public void updatePossibleTargetLocations(){
 		possibleTargetLocations.clear();
 		int reach = 1;
