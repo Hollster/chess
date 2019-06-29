@@ -1,63 +1,77 @@
 package chess;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
-public class Piece {
-	public String color;
-	public Pattern pattern;
-	public int[] position;
+public class Piece extends Point{
+	protected String color;
 	protected int limitOfReach;
-	protected int[][] directions;
-	ArrayList<int[]> possibleTargetLocations;
+	protected Point[] directions;
+	protected ArrayList<Point> possibleTargetLocations;
 
 	Piece(){
-		possibleTargetLocations = new ArrayList<int[]>();
+		possibleTargetLocations = new ArrayList<Point>();
 	}
 	
-	Piece(int[] position, String color){
-		this.position = position;
+	Piece(int x, int y, String color){
+		this.x = x;
+		this.y = y;
 		this.color = color;
-		possibleTargetLocations = new ArrayList<int[]>();
+		possibleTargetLocations = new ArrayList<Point>();
 	}
 
-
-	public ArrayList<int[]> getPossibleTargetLocations() {
+	public ArrayList<Point> getPossibleTargetLocations() {
 		return possibleTargetLocations;
+	}
+	
+	public String getColor() {
+		return color;
 	}
 	
 	private String getOtherColor(String color) {
 		return "white".equals(color) ? "black" : "white";
 	}
 	
-//	public void updatePossibleTargetLocations(String input){
-//		updatePossibleTargetLocations();
-//	}
-//	
+	public void multiplyWithInt(int factor) {
+		this.x = this.x * factor;
+		this.y = this.x * factor;
+	}
+	
+	public void translate(Point point) {
+		this.x = this.x + point.x;
+		this.y = this.y + point.y;
+	}
+	
+	public void translateNegative(Point point) {
+		this.x = this.x - point.x;
+		this.y = this.y - point.y;
+	}
+	
+
 	public void updatePossibleTargetLocations(){
 		possibleTargetLocations.clear();
 		int reach = 1;
-		int[] possibleLocation; 
-		for (int[] currentDirection : directions) {
-			possibleLocation = Vectors.addVectors(position, Vectors.multiplyIntWithVector(reach, currentDirection));
+		Point possibleLocation;
+		for (Point currentDirection : directions) {
+			possibleLocation = new Point(this);
 			CheckThisDirection:
 				for(reach = 1; reach <= limitOfReach; reach++) {
-					possibleLocation = Vectors.addVectors(position, Vectors.multiplyIntWithVector(reach, currentDirection));
-					if((possibleLocation[0] 
-							< Board.numberOfColumns && possibleLocation[0] >= 0) 
-					&& (possibleLocation[1] 
-							< Board.numberOfRows && possibleLocation[1] >= 0)) {
+					possibleLocation.setLocation(this);
+					possibleLocation.translate(currentDirection.x * reach, currentDirection.y * reach);
+					if((possibleLocation.x < Board.NUMBER_OF_COLUMNS && possibleLocation.x >= 0) 
+					&& (possibleLocation.y < Board.NUMBER_OF_ROWS && possibleLocation.y >= 0)) {
 						for(Piece piece : MainChess.getPlayer(color).getPiecesOnBoard()) {
-							if (Vectors.areEqual(piece.position , possibleLocation)) {
+							if (possibleLocation.equals(piece)) {
 								break CheckThisDirection;
 							}
 						}
 						for(Piece piece : MainChess.getPlayer(getOtherColor(color)).getPiecesOnBoard()) {
-							if (Vectors.areEqual(piece.position , possibleLocation)) {
-								possibleTargetLocations.add(possibleLocation);
+							if (possibleLocation.equals(piece)) {
+								possibleTargetLocations.add(new Point(possibleLocation));
 								break CheckThisDirection;
 							}
 						}
-						possibleTargetLocations.add(possibleLocation);
+						possibleTargetLocations.add(new Point(possibleLocation));
 					}
 				}
 		}

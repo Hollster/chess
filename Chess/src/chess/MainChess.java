@@ -1,12 +1,13 @@
 package chess;
 
-import java.util.ArrayList;
+
+import java.awt.Point;
 
 public class MainChess {
 	private static Player player1;
 	private static Player player2;
-	public static final int letterToNumberDifference = 65;
-	private static final int numberToNumberDifference = 49;
+	public static final int LETTER_TO_NUMBER_DIFFERENCE = 65;
+	private static final int NUMBER_TO_NUMBER_DIFFERENCE = 49;
 	
 	public static void main(String[] args) {
 		PlayerInput.makeScanner();
@@ -21,10 +22,6 @@ public class MainChess {
 			oneTurn();
 			Board.populateBoard();
 			Board.printBoard();
-//			for (int[]location : getPlayer("white").getPiecesOnBoard().get(7).possibleTargetLocations) {
-//				System.err.println(location[0] + ", " + location[1]);
-//			}
-//			
 		} 
 		PlayerInput.closeScanner();
 		System.out.println(getPlayer(false).name + " wins!");	
@@ -37,75 +34,52 @@ public class MainChess {
 		for(Piece piece : player2.getPiecesOnBoard()) {
 			piece.updatePossibleTargetLocations();
 		}
-//		System.out.println(getPlayer("white").name + "s Spielfiguren können hier stehen");
-//		for (Piece piece : getPlayer("white").getPiecesOnBoard()) {
-//			System.out.println(piece.getClass().getSimpleName() + ", Position: " + piece.position[0] + ", " + piece.position[1]);
-//			for(int[] position : piece.possibleTargetLocations) {
-//				System.out.println("------Possible Position: " + position[0] + ", " + position[1]);
-//			}
-//		}
-//		
-//		System.out.println(getPlayer("black").name + "s Spielfiguren können hier stehen");
-//		for (Piece piece : getPlayer("black").getPiecesOnBoard()) {
-//			System.out.println(piece.getClass().getSimpleName() + ", Position: " + piece.position[0] + ", " + piece.position[1]);
-//			for(int[] position : piece.possibleTargetLocations) {
-//				System.out.println("------Possible Position: " + position[0] + ", " + position[1]);
-//			}
-//		}
 	}
 	
 	
 		
 	private static void oneTurn() {
 		Piece chosenPiece = getChosenPiece();
-		move(chosenPiece);
+		movePiece(chosenPiece);
 		if(inCheck(getPlayer(false), getPlayer(true))) {
 			System.out.println("CHECK!");
 			checkForMate();
 		}
-//		System.out.println(getPlayer(false).name + "s Spielfiguren können hier stehen");
-//		for (Piece piece : getPlayer(false).getPiecesOnBoard()) {
-//			System.out.println(piece.getClass().getSimpleName() + ", Position: " + piece.position[0] + ", " + piece.position[1]);
-//			for(int[] position : piece.possibleTargetLocations) {
-//				System.out.println("------Possible Position: " + position[0] + ", " + position[1]);
-//			}
-//		}
 	}
 
 	private static void checkForMate() {
-		int[] originalPosition;
-		for(Piece piece: getPlayer(false).getPiecesOnBoard()) {
-			originalPosition = piece.position;
-			for (int[] possibleLocation : piece.possibleTargetLocations) {
-				piece.position = possibleLocation;
+		for(Piece piece: getPlayer(false).getPiecesOnBoard()) { // get all of the pieces of the player who is currently in check
+			Point originalPosition = new Point(piece.x, piece.y);
+			for (Point possibleLocation : piece.possibleTargetLocations) { // get all of that pieces possible Target locations
 				mateCapture(possibleLocation);
 				if(!inCheck(getPlayer(false), getPlayer(true))) {
-					piece.position = originalPosition;
+					piece.setLocation(originalPosition);
+					piece.y = originalPosition.y;
 					if(getPlayer(true).getRemovedPiece() != null) {
 						getPlayer(true).restorePiece();
 					}
 					getPlayer(true).updateAllPossiblePieces();
-					getPlayer(true).updateAllPossiblePieces();
+					getPlayer(false).updateAllPossiblePieces();
 					return;
 				} else {
-					piece.position = originalPosition;
+					piece.setLocation(originalPosition);
 					if(getPlayer(true).getRemovedPiece() != null) {
 						getPlayer(true).restorePiece();
 					}
-					getPlayer(true).updateAllPossiblePieces();
-					getPlayer(true).updateAllPossiblePieces();
 				}
 			}
 		}
 		
 		System.out.println("MATE\n" + getPlayer(true).name + " wins!");
+		Board.populateBoard();
+		Board.printBoard();
 		System.exit(0);
 	}
 	
-	private static void mateCapture(int[] positionOfCapture) {
+	private static void mateCapture(Point positionOfCapture) {
 		for(Piece piece : getPlayer(true).getPiecesOnBoard()) {
-			for(int[] possibleLocation : piece.getPossibleTargetLocations()) {
-				if(Vectors.areEqual(positionOfCapture, possibleLocation)) {
+			for(Point possibleLocation : piece.getPossibleTargetLocations()) {
+				if(positionOfCapture.equals(possibleLocation)) {
 					getPlayer(true).removePieceForMate(piece);
 					getPlayer(true).updateAllPossiblePieces();
 					return;
@@ -114,9 +88,9 @@ public class MainChess {
 		}
 	}
 	
-	private static void move(Piece piece) {
+	private static void movePiece(Piece piece) {
 		String secondPlayerInput;
-		int[] previousPosition = piece.position;
+		Point previousLocation = new Point(piece.x, piece.y);
 		do {
 			secondPlayerInput = PlayerInput.getPlayerInput(getPlayer(true), "Hey, " + getPlayer(true).name + "! Your move! Select your target tile!" 
 					+ "\nEnter redo to choose another tile and help if you need help");
@@ -126,26 +100,27 @@ public class MainChess {
 			}
 			if(!entryIsOnBoard(secondPlayerInput)) {
 				System.err.println("7 - That's not a valid tile. Please choose again.");
-				move(piece);
+				movePiece(piece);
 				return;
 			}
-		} while(!moveIsValid(piece, entryToCoordinates(secondPlayerInput)));
-		piece.position = entryToCoordinates(secondPlayerInput);
+		} while(!moveIsValid(piece, entryToPoint(secondPlayerInput)));
+		piece.setLocation(entryToPoint(secondPlayerInput));
 		updatePlayersTargetLocations(getPlayer(false));
-		capture(getPlayer(false), piece.position);
-		// TODO
-		// hier muss noch nen capture hin
+		capture(getPlayer(false), piece);
 		if(inCheck(getPlayer(true), getPlayer(false))) {
 			System.err.println("6 - Not valid, you would be in check");
 			uncapture(getPlayer(false));
-			piece.position = previousPosition;
-			move(piece);
+			piece.setLocation(previousLocation);
+			movePiece(piece);
 			return;
 		}
-		capture(getPlayer(false), piece.position);
+		capture(getPlayer(false), piece);
+		// Pawn special rules
 		if(piece instanceof Pawn) {
+			// move 2 spaces in the beginning
 			piece.directions[3] = null;
-			if(piece.position[1] == 7 || piece.position[1] == 0) {
+			//promotion
+			if(piece.y == 7 || piece.y == 0) {
 				promotion(piece);
 			}
 		}
@@ -170,21 +145,21 @@ public class MainChess {
 					&& !"ROOK".equals(promotionAnswer) && !"BISHOP".equals(promotionAnswer));
 			switch(promotionAnswer) {
 			case "QUEEN":
-				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.position, getPlayer(true).color));
+				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.x, piece.y, getPlayer(true).color));
 			case "KNIGHT":
-				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.position, getPlayer(true).color));
+				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.x, piece.y, getPlayer(true).color));
 			case "ROOK":
-				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.position, getPlayer(true).color));
+				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.x, piece.y, getPlayer(true).color));
 			case "BISHOP":
-				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.position, getPlayer(true).color));
+				getPlayer(true).getPiecesOnBoard().add(new Queen (piece.x, piece.y, getPlayer(true).color));
 			}
 			getPlayer(true).getPiecesOnBoard().remove(piece);
 		}
 	}
 	
-	private static void capture(Player opponent, int[] positionOfMovedPiece) {
+	private static void capture(Player opponent, Point positionOfMovedPiece) {
 		for(Piece piece : opponent.getPiecesOnBoard()) {
-			if (Vectors.areEqual(piece.position, positionOfMovedPiece)) {
+			if(piece.equals(positionOfMovedPiece)) {
 				opponent.removePiece(piece);
 				return;
 			}
@@ -192,24 +167,11 @@ public class MainChess {
 	}
 	
 	private static boolean inCheck(Player playerInCheck, Player possibleWinner) {
-		int[] kingPosition = playerInCheck.getKingPosition();
+		Point kingPosition = playerInCheck.getKingPosition();
 		possibleWinner.updateAllPossiblePieces();
 		for (Piece piece : possibleWinner.getPiecesOnBoard()) {
-			for (int[] position : piece.possibleTargetLocations) {
-				if(Vectors.areEqual(kingPosition, position)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-
-	
-	private static boolean inCheck(Player activePlayer, Player opponent, int[] kingPosition) {
-		for (Piece piece : opponent.getPiecesOnBoard()) {
-			for (int[] position : piece.possibleTargetLocations) {
-				if(Vectors.areEqual(kingPosition, position)) {
+			for (Point location : piece.possibleTargetLocations) {
+				if(location.equals(kingPosition)) {//Vectors.areEqual(kingPosition, location)) {
 					return true;
 				}
 			}
@@ -223,9 +185,9 @@ public class MainChess {
 		}
 	}
 	
-	private static boolean moveIsValid(Piece piece, int[] targetCoordinates) {
-		for(int[] possibleTargetLocation : piece.possibleTargetLocations) {
-			if(Vectors.areEqual(targetCoordinates, possibleTargetLocation)) {
+	private static boolean moveIsValid(Piece piece, Point targetCoordinates) {
+		for(Point possibleTargetLocation : piece.possibleTargetLocations) {
+			if(targetCoordinates.equals(possibleTargetLocation)) {
 				return true;
 			}
 		}
@@ -250,7 +212,7 @@ public class MainChess {
 	private static Piece getPieceFromValidEntry(String playerEntry) {
 		if(entryIsOnBoard(playerEntry)) {
 			for(Piece piece : getPlayer(true).getPiecesOnBoard()) {
-				if (Vectors.areEqual(piece.position, entryToCoordinates(playerEntry))){
+				if (piece.equals(entryToPoint(playerEntry))){//Vectors.areEqual(piece.position, entryToCoordinates(playerEntry))){
 					return piece;
 				}
 			}
@@ -262,11 +224,10 @@ public class MainChess {
 		}
 	}
 	
-	private static int[] entryToCoordinates(String playerEntry) {
-		int[]coordinates = new int[2];
-		coordinates[0] = (int)playerEntry.charAt(0) - letterToNumberDifference;
-		coordinates[1] = Board.numberOfRows - Character.getNumericValue(playerEntry.charAt(1));
-		return coordinates;
+	private static Point entryToPoint(String playerEntry) {
+		int x = (int)playerEntry.charAt(0) - LETTER_TO_NUMBER_DIFFERENCE;
+		int y = Board.NUMBER_OF_ROWS - Character.getNumericValue(playerEntry.charAt(1));
+		return new Point(x, y);
 	}
 	
 	// Create Players
@@ -335,8 +296,8 @@ public class MainChess {
 	
 	private static int[] inputToCoordinates(String playerInput) {
 		int[] tileCoordinates = new int[2];
-		tileCoordinates[0] = playerInput.charAt(0) - letterToNumberDifference;
-		tileCoordinates[1] = playerInput.charAt(1) - numberToNumberDifference;
+		tileCoordinates[0] = playerInput.charAt(0) - LETTER_TO_NUMBER_DIFFERENCE;
+		tileCoordinates[1] = playerInput.charAt(1) - NUMBER_TO_NUMBER_DIFFERENCE;
 		return tileCoordinates;
 	}
 	

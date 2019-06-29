@@ -1,11 +1,14 @@
 package chess;
 
+import java.awt.Point;
+
 public class Rook extends Piece{
 
-	Rook(int[] position, String color){
-		super.position = position;
+	Rook(int x, int y, String color){
+		super.x = x;
+		super.y = y;
 		super.limitOfReach = 7;
-		super.directions = new int[][] {{1,0}, {-1, 0}, {0, 1}, {0, -1}};
+		super.directions = new Point[] {new Point(1,0), new Point(-1, 0), new Point(0, 1), new Point(0, -1)};
 		super.color = color;
 	}
 }
