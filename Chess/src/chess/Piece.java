@@ -20,35 +20,25 @@ public abstract class Piece extends Point{
 		possibleTargetLocations = new ArrayList<Point>();
 	}
 
-	public ArrayList<Point> getPossibleTargetLocations() {
+	ArrayList<Point> getPossibleTargetLocations() {
 		return possibleTargetLocations;
 	}
 	
-	public String getColor() {
+	String getColor() {
 		return color;
 	}
 	
-	private String getOtherColor(String color) {
-		return "white".equals(color) ? "black" : "white";
-	}
-	
-	public void multiplyWithInt(int factor) {
+	void multiplyWithInt(int factor) {
 		this.x = this.x * factor;
 		this.y = this.x * factor;
 	}
 	
-	public void translate(Point point) {
+	void translate(Point point) {
 		this.x = this.x + point.x;
 		this.y = this.y + point.y;
 	}
-	
-//	public void translateNegative(Point point) {
-//		this.x = this.x - point.x;
-//		this.y = this.y - point.y;
-//	}
-	
 
-	public void updatePossibleTargetLocations(){
+	void updatePossibleTargetLocations(){
 		possibleTargetLocations.clear();
 		int reach = 1;
 		Point possibleLocation;
@@ -75,5 +65,66 @@ public abstract class Piece extends Point{
 					}
 				}
 		}
+	}
+	
+	
+	void move() {
+		String secondPlayerInput;
+		Point previousLocation = new Point(this);
+		do {
+			secondPlayerInput = PlayerInput.targetLocation(this);
+			if ("REDO".equals(secondPlayerInput)) {
+				MainChess.oneTurn();
+				return;
+			}
+			if(!Board.entryIsOnBoard(secondPlayerInput)) {
+				System.err.println("7 - That's not a valid tile. Please choose again.");
+				move();
+				return;
+				}
+		} while(!moveIsValid(PlayerInput.entryToPoint(secondPlayerInput)));
+		this.setLocation(PlayerInput.entryToPoint(secondPlayerInput));
+		capture(MainChess.getPlayer(false));
+		if(MainChess.inCheck(MainChess.getPlayer(true))) {
+			System.err.println("6 - Not valid, you would be in check");
+			undoMove(MainChess.getPlayer(true), previousLocation);
+			move();
+			return;
+		}
+		MainChess.getPlayer(false).updateAllPossiblePieces();
+		MainChess.getPlayer(true).updateAllPossiblePieces();
+	}
+	
+	
+	private void undoMove(Player currentPlayer, Point previousLocation) {
+		this.setLocation(previousLocation);
+		MainChess.getOtherPlayer(currentPlayer).restorePiece();
+		MainChess.getPlayer(true).updateAllPossiblePieces();
+		MainChess.getPlayer(false).updateAllPossiblePieces();
+	}
+	
+	private void capture(Player opponent) {
+		for(Piece piece : opponent.getPiecesOnBoard()) {
+			if(this.equals(piece)) {
+				opponent.removePiece(piece);
+				MainChess.getPlayer(true).updateAllPossiblePieces();
+				MainChess.getPlayer(false).updateAllPossiblePieces();
+				return;
+			}
+		}
+	}
+	
+	private boolean moveIsValid(Point targetCoordinates) {
+		for(Point possibleTargetLocation : possibleTargetLocations) {
+			if(targetCoordinates.equals(possibleTargetLocation)) {
+				return true;
+			}
+		}
+		System.err.println("6 - Sorry, you can't go there. Either something is in the way or the movement pattern does not match");
+		return false;
+	}
+	
+	private String getOtherColor(String color) {
+		return "white".equals(color) ? "black" : "white";
 	}
 }

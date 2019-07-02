@@ -53,34 +53,34 @@ public class Player {
 	}
 
 	
-	public void updateAllPossiblePieces() {
+	void updateAllPossiblePieces() {
 		for(Piece piece : piecesOnBoard) {
 			piece.updatePossibleTargetLocations();
 		}
 	}
 	
-	public Piece getRemovedPiece() {
+	Piece getRemovedPiece() {
 		return removedPiece;
 	}
 	
-	public void setRemovedPiece(Piece piece) {
+	void setRemovedPiece(Piece piece) {
 		removedPiece = piece;
 	}
 	
-	public Point getKingPosition() {
+	Point getKingPosition() {
 		return new Point(king.x, king.y);
 	}
 	
-	public King getKing() {
+	King getKing() {
 		return king;
 	}
 	
 	
-	public ArrayList<Piece> getPiecesOnBoard() {
+	ArrayList<Piece> getPiecesOnBoard() {
 		return piecesOnBoard;
 	}
 	
-	public void removePiece(Piece currentpiece) {
+	void removePiece(Piece currentpiece) {
 		for (int i = 0; i < piecesOnBoard.size(); i++) {
 			if(currentpiece.equals(piecesOnBoard.get(i))) {
 				removedPiece = piecesOnBoard.get(i);
@@ -90,26 +90,26 @@ public class Player {
 		}
 	}
 	
-	public void deleteRemovedPiece() {
+	void deleteRemovedPiece() {
 		removedPiece = null;
 	}
 	
-	public void restorePiece() {
+	void restorePiece() {
 		if(removedPiece != null) {
 			piecesOnBoard.add(removedPiece);
 			removedPiece = null;
 		}
 	}
 	
-	public void addPiece(Piece currentpiece) {
+	void addPiece(Piece currentpiece) {
 		piecesOnBoard.add(currentpiece);
 	}
 		
-	public void giveUp() {
+	void giveUp() {
 		this.hasLost = true;
 	}
 	
-	public void toggleActivity() {
+	void toggleActivity() {
 		this.isActive = !this.isActive;
 	}
 }

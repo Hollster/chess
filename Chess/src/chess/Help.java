@@ -4,11 +4,11 @@ public class Help {
 	private static String initialHelpMessage = "Welcome to the help function! ";
 	private static String options = "If you want to exit the help menu please press the q key.\nIf you want to know about the board, please press the b key.\nIf you want to know about the pieces abbreviations please press the p key.\nIf you want to know how to enter a move, please enter the m key.";
 
-	public static void startHelp() {
+	static void startHelp() {
 		delegateHelpEntry(PlayerInput.getPlayerInput(initialHelpMessage + options));
-}
+	}
 	
-	public static void startHelp(String message) {
+	static void startHelp(String message) {
 			delegateHelpEntry(PlayerInput.getPlayerInput(message));
 	}
 	
@@ -36,20 +36,20 @@ public class Help {
 		}
 	}
 	
-	public static void board() {
+	private static void board() {
 		System.out.println("white square: []\nblack square: {}");
 	}
 	
-	public static void pieces() {
+	private static void pieces() {
 		System.out.println("wP: white pawn\nbP: black pawn\n\nETC \n \nother pieces: \n\n"
 				+ "K: knight\nB: bishop\nR: rook\nQ: Queen\nK: King");
 	}
 	
-	public static void move() {
+	private static void move() {
 		System.out.println("Please enter the new position in the following format: Letter, Number (A1 - I8)");
 	}
 	
-	public static void quitHelp() {
+	private static void quitHelp() {
 		Board.print();
 		return;
 	}

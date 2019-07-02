@@ -17,7 +17,7 @@ boolean hasMoved;
 	}
 	
 	@Override
-	public void updatePossibleTargetLocations(){
+	void updatePossibleTargetLocations(){
 		super.possibleTargetLocations.clear();
 		Point possibleLocationFront = new Point(this);
 		possibleLocationFront.translate(directions[0].x, directions[0].y);
@@ -42,6 +42,37 @@ boolean hasMoved;
 		}
 		
 	}
+	
+	@Override
+	void move() {
+		super.move();
+		directions[3] = null;
+		if(y == Board.NUMBER_OF_ROWS - 1 || y == 0) {
+			promotion();
+		}
+	}
+	
+	private void promotion() {
+		String promotionAnswer = PlayerInput.promotion();
+			switch(promotionAnswer) {
+			case "QUEEN":
+				MainChess.getPlayer(true).getPiecesOnBoard().add(new Queen (x, y, MainChess.getPlayer(true).color));
+				break;
+			case "KNIGHT":
+				MainChess.getPlayer(true).getPiecesOnBoard().add(new Knight (x, y, MainChess.getPlayer(true).color));
+				break;
+			case "ROOK":
+				MainChess.getPlayer(true).getPiecesOnBoard().add(new Rook (x, y, MainChess.getPlayer(true).color));
+				break;
+			case "BISHOP":
+				MainChess.getPlayer(true).getPiecesOnBoard().add(new Bishop (x, y, MainChess.getPlayer(true).color));
+				break;
+			default:
+				return;
+			}
+			MainChess.getPlayer(true).getPiecesOnBoard().remove(this);
+		}
+	
 	
 	private boolean pieceDiagonalInFrontOfMe(Point possibleLocation) {
 		String opponentColor = "white".equals(this.color) ? "black" : "white";
@@ -85,4 +116,6 @@ boolean hasMoved;
 		}
 		return true;
 	}
+	
+	
 }
