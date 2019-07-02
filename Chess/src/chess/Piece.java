@@ -20,24 +20,6 @@ public abstract class Piece extends Point{
 		possibleTargetLocations = new ArrayList<Point>();
 	}
 
-	ArrayList<Point> getPossibleTargetLocations() {
-		return possibleTargetLocations;
-	}
-	
-	String getColor() {
-		return color;
-	}
-	
-	void multiplyWithInt(int factor) {
-		this.x = this.x * factor;
-		this.y = this.x * factor;
-	}
-	
-	void translate(Point point) {
-		this.x = this.x + point.x;
-		this.y = this.y + point.y;
-	}
-
 	void updatePossibleTargetLocations(){
 		possibleTargetLocations.clear();
 		int reach = 1;

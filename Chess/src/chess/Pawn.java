@@ -26,11 +26,9 @@ boolean hasMoved;
 			if(this.directions[3] != null) {
 				Point possibleLocationTwoFront = new Point(this);
 				possibleLocationTwoFront.translate(directions[3].x, directions[3].y);
-				if(noPieceTwoFieldsInFrontOfMe(possibleLocationTwoFront)) {
+				if(noPieceInFrontOfMe(possibleLocationTwoFront)) {
 					super.possibleTargetLocations.add(new Point(possibleLocationTwoFront));
-			}
-			
-			
+				}
 			}
 		}
 		for(int i = 1; i < 3; i++) {
@@ -40,7 +38,6 @@ boolean hasMoved;
 				super.possibleTargetLocations.add(new Point (possibleLocationDiagonal));
 			}
 		}
-		
 	}
 	
 	@Override
@@ -83,39 +80,21 @@ boolean hasMoved;
 		}
 		return false;
 	}
-	
-	// TODO
-	// Zusammenfassen
-	
+
 	private boolean noPieceInFrontOfMe(Point possibleLocation) {
-	
-		for(Piece piece : MainChess.getPlayer(true).getPiecesOnBoard()) {
-			if(piece.equals(possibleLocation)){
-				return false;
-			}
+		if(!thereIsPiece(true, possibleLocation) && !thereIsPiece(false, possibleLocation)) {
+			return true;
 		}
-		for(Piece piece : MainChess.getPlayer(false).getPiecesOnBoard()) {
-			if(piece.equals(possibleLocation)){
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
 	
-	private boolean noPieceTwoFieldsInFrontOfMe(Point possibleLocation) {
-		
-		for(Piece piece : MainChess.getPlayer(true).getPiecesOnBoard()) {
+	private boolean thereIsPiece(boolean player, Point possibleLocation) {
+		for(Piece piece : MainChess.getPlayer(player).getPiecesOnBoard()) {
 			if(piece.equals(possibleLocation)){
-				return false;
+				return true;
 			}
 		}
-		for(Piece piece : MainChess.getPlayer(false).getPiecesOnBoard()) {
-			if(piece.equals(possibleLocation)){
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
-	
-	
+
 }

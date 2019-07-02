@@ -1,11 +1,11 @@
 package chess;
 
 public class Board {
-	public static final int NUMBER_OF_ROWS = 8;
-	public static final int NUMBER_OF_COLUMNS = 8;
-	public static String[][] board = new String[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
+	static final int NUMBER_OF_ROWS = 8;
+	static final int NUMBER_OF_COLUMNS = 8;
+	static String[][] board = new String[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 	
-	public static void populate() {
+	static void populate() {
 		eraseBoard();
 		placePieces(MainChess.getPlayer(true));
 		placePieces(MainChess.getPlayer(false));
@@ -37,7 +37,7 @@ public class Board {
 		}
 	}
 
-	public static void print() {
+	static void print() {
 		System.out.println();
 			for(int row = 0; row < NUMBER_OF_ROWS; row++) {
 				System.out.print("  " + (NUMBER_OF_ROWS - row) + "  ");

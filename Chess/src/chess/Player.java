@@ -23,32 +23,23 @@ public class Player {
 
 	private  ArrayList<Piece> makePieces(String color) {
 		ArrayList<Piece>pieces = new ArrayList<Piece>();
-		
-		if(isActive) {
-			for (int column = 0; column < Board.NUMBER_OF_COLUMNS; column++) {
-				pieces.add(new Pawn(column, 1, color));
-			}
-			pieces.add(new Rook(0, 0, color));
-			pieces.add(new Knight(1,0, color));
-			pieces.add(new Bishop(2,0, color));
-			pieces.add(new Queen(3,0, color));
-			pieces.add(king);
-			pieces.add(new Bishop(5,0, color));
-			pieces.add(new Knight(6,0, color));
-			pieces.add(new Rook(7,0, color));
-		} else {
-			for (int column = 0; column < Board.NUMBER_OF_COLUMNS; column++) {
-				pieces.add(new Pawn(column, 6, color));
-			}
-			pieces.add(new Rook(0,7, color));
-			pieces.add(new Knight(1,7, color));
-			pieces.add(new Bishop(2,7, color));
-			pieces.add(new Queen(3,7, color));
-			pieces.add(king);
-			pieces.add(new Bishop(5,7, color));
-			pieces.add(new Knight(6,7, color));
-			pieces.add(new Rook(7,7, color));
+		int row = 0;
+		int pawnRow = 1;
+		if(!isActive) {
+			row = Board.NUMBER_OF_ROWS - 1;
+			pawnRow = Board.NUMBER_OF_ROWS - 2;
 		}
+		for (int column = 0; column < Board.NUMBER_OF_COLUMNS; column++) {
+			pieces.add(new Pawn(column, pawnRow, color));
+		}
+		pieces.add(new Rook(0, row, color));
+		pieces.add(new Knight(1,row, color));
+		pieces.add(new Bishop(2,row, color));
+		pieces.add(new Queen(3, row, color));
+		pieces.add(king);
+		pieces.add(new Bishop(5,row, color));
+		pieces.add(new Knight(6,row, color));
+		pieces.add(new Rook(7,row, color));
 		return pieces;
 	}
 
@@ -59,23 +50,10 @@ public class Player {
 		}
 	}
 	
-	Piece getRemovedPiece() {
-		return removedPiece;
-	}
-	
-	void setRemovedPiece(Piece piece) {
-		removedPiece = piece;
-	}
-	
 	Point getKingPosition() {
 		return new Point(king.x, king.y);
 	}
-	
-	King getKing() {
-		return king;
-	}
-	
-	
+		
 	ArrayList<Piece> getPiecesOnBoard() {
 		return piecesOnBoard;
 	}
@@ -99,14 +77,6 @@ public class Player {
 			piecesOnBoard.add(removedPiece);
 			removedPiece = null;
 		}
-	}
-	
-	void addPiece(Piece currentpiece) {
-		piecesOnBoard.add(currentpiece);
-	}
-		
-	void giveUp() {
-		this.hasLost = true;
 	}
 	
 	void toggleActivity() {
