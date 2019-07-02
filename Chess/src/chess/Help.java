@@ -12,7 +12,7 @@ public class Help {
 			delegateHelpEntry(PlayerInput.getPlayerInput(message));
 	}
 	
-	public static void delegateHelpEntry(String helpEntry) {
+	private static void delegateHelpEntry(String helpEntry) {
 		switch (helpEntry) {
 		case "HELP":
 			break;
@@ -50,7 +50,7 @@ public class Help {
 	}
 	
 	public static void quitHelp() {
-		Board.printBoard();
+		Board.print();
 		return;
 	}
 }

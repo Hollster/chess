@@ -3,7 +3,7 @@ package chess;
 import java.awt.Point;
 import java.util.ArrayList;
 
-public class Piece extends Point{
+public abstract class Piece extends Point{
 	protected String color;
 	protected int limitOfReach;
 	protected Point[] directions;
@@ -42,10 +42,10 @@ public class Piece extends Point{
 		this.y = this.y + point.y;
 	}
 	
-	public void translateNegative(Point point) {
-		this.x = this.x - point.x;
-		this.y = this.y - point.y;
-	}
+//	public void translateNegative(Point point) {
+//		this.x = this.x - point.x;
+//		this.y = this.y - point.y;
+//	}
 	
 
 	public void updatePossibleTargetLocations(){

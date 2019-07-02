@@ -5,7 +5,7 @@ public class Board {
 	public static final int NUMBER_OF_COLUMNS = 8;
 	public static String[][] board = new String[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 	
-	public static void populateBoard() {
+	public static void populate() {
 		eraseBoard();
 		placePieces(MainChess.getPlayer(true));
 		placePieces(MainChess.getPlayer(false));
@@ -37,8 +37,7 @@ public class Board {
 		}
 	}
 
-	public static void printBoard() {
-
+	public static void print() {
 		System.out.println();
 			for(int row = 0; row < NUMBER_OF_ROWS; row++) {
 				System.out.print("  " + (NUMBER_OF_ROWS - row) + "  ");
@@ -57,4 +56,26 @@ public class Board {
 			} 
 			System.out.print("\n");
 		}
+	
+	static boolean entryIsOnBoard(String playerInput) {
+		if(entryHasCorrectLength(playerInput)) {
+			char letter = playerInput.charAt(0);
+			char number = playerInput.charAt(1);
+			if(letter >= 'A' && letter <= 'H' && number >='1' && number <='8') {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	private static boolean entryHasCorrectLength(String playerInput) {
+		if (playerInput.length() == 2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

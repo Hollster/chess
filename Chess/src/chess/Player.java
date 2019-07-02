@@ -4,8 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 public class Player {
-	String name;
-	String color;
+	final String name;
+	final String color;
 	boolean isActive;
 	boolean hasLost;
 	private ArrayList<Piece> piecesOnBoard;
@@ -80,17 +80,7 @@ public class Player {
 		return piecesOnBoard;
 	}
 	
-	
 	public void removePiece(Piece currentpiece) {
-		for (int i = 0; i < piecesOnBoard.size(); i++) {
-			if(currentpiece.equals(piecesOnBoard.get(i))) {
-				piecesOnBoard.remove(i);
-				return;
-			}
-		}
-	}
-	
-	public void removePieceForMate(Piece currentpiece) {
 		for (int i = 0; i < piecesOnBoard.size(); i++) {
 			if(currentpiece.equals(piecesOnBoard.get(i))) {
 				removedPiece = piecesOnBoard.get(i);
@@ -100,9 +90,15 @@ public class Player {
 		}
 	}
 	
-	public void restorePiece() {
-		piecesOnBoard.add(removedPiece);
+	public void deleteRemovedPiece() {
 		removedPiece = null;
+	}
+	
+	public void restorePiece() {
+		if(removedPiece != null) {
+			piecesOnBoard.add(removedPiece);
+			removedPiece = null;
+		}
 	}
 	
 	public void addPiece(Piece currentpiece) {
