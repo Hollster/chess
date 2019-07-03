@@ -53,21 +53,21 @@ boolean hasMoved;
 		String promotionAnswer = PlayerInput.promotion();
 			switch(promotionAnswer) {
 			case "QUEEN":
-				MainChess.getPlayer(true).getPiecesOnBoard().add(new Queen (x, y, MainChess.getPlayer(true).color));
+				MainChess.getActivePlayer().getPiecesOnBoard().add(new Queen (x, y, MainChess.getActivePlayer().color));
 				break;
 			case "KNIGHT":
-				MainChess.getPlayer(true).getPiecesOnBoard().add(new Knight (x, y, MainChess.getPlayer(true).color));
+				MainChess.getActivePlayer().getPiecesOnBoard().add(new Knight (x, y, MainChess.getActivePlayer().color));
 				break;
 			case "ROOK":
-				MainChess.getPlayer(true).getPiecesOnBoard().add(new Rook (x, y, MainChess.getPlayer(true).color));
+				MainChess.getActivePlayer().getPiecesOnBoard().add(new Rook (x, y, MainChess.getActivePlayer().color));
 				break;
 			case "BISHOP":
-				MainChess.getPlayer(true).getPiecesOnBoard().add(new Bishop (x, y, MainChess.getPlayer(true).color));
+				MainChess.getActivePlayer().getPiecesOnBoard().add(new Bishop (x, y, MainChess.getActivePlayer().color));
 				break;
 			default:
 				return;
 			}
-			MainChess.getPlayer(true).getPiecesOnBoard().remove(this);
+			MainChess.getActivePlayer().getPiecesOnBoard().remove(this);
 		}
 	
 	
@@ -82,14 +82,14 @@ boolean hasMoved;
 	}
 
 	private boolean noPieceInFrontOfMe(Point possibleLocation) {
-		if(!thereIsPiece(true, possibleLocation) && !thereIsPiece(false, possibleLocation)) {
+		if(!thereIsPiece(MainChess.getActivePlayer(), possibleLocation) && !thereIsPiece(MainChess.getInactivePlayer(), possibleLocation)) {
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean thereIsPiece(boolean player, Point possibleLocation) {
-		for(Piece piece : MainChess.getPlayer(player).getPiecesOnBoard()) {
+	private boolean thereIsPiece(Player player, Point possibleLocation) {
+		for(Piece piece : player.getPiecesOnBoard()) {
 			if(piece.equals(possibleLocation)){
 				return true;
 			}

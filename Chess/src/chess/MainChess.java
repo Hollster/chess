@@ -22,7 +22,7 @@ public class MainChess {
 			Board.print();
 		} 
 		PlayerInput.closeScanner();
-		System.out.println(getPlayer(false).name + " wins!");	
+		System.out.println(getInactivePlayer().name + " wins!");	
 	}
 	
 	private static void initializePossiblePositions() {
@@ -43,10 +43,10 @@ public class MainChess {
 		Piece chosenPiece = PlayerInput.getPiece();
 		chosenPiece.move();
 		checkForMate();
-		if(inCheck(getPlayer(false))) {
+		if(inCheck(getInactivePlayer())) {
 			System.out.println("CHECK!");
 		}
-		getPlayer(false).deleteRemovedPiece();
+		getInactivePlayer().deleteRemovedPiece();
 	}
 	
 	private static void capture(Player opponent, Point positionOfMovedPiece) {
@@ -81,20 +81,20 @@ public class MainChess {
 	
 	private static void checkForMate() {
 		Point originalPosition = new Point(); 
-		for(Piece piece: getPlayer(false).getPiecesOnBoard()) { 
+		for(Piece piece: getInactivePlayer().getPiecesOnBoard()) { 
 			originalPosition.setLocation(piece.x, piece.y);
 			for (Point possibleLocation : piece.possibleTargetLocations) {
 				piece.setLocation(possibleLocation);
-				capture(getPlayer(true), piece);
-				if(!inCheck(getPlayer(false))) {
-					undoMove(getPlayer(false), piece, originalPosition);
+				capture(getActivePlayer(), piece);
+				if(!inCheck(getInactivePlayer())) {
+					undoMove(getInactivePlayer(), piece, originalPosition);
 					return;
 				} else {
-					undoMove(getPlayer(false), piece, originalPosition);
+					undoMove(getInactivePlayer(), piece, originalPosition);
 				}
 			}
 		}
-		System.out.println("CHECK MATE\n" + getPlayer(true).name + " wins!");
+		System.out.println("CHECK MATE\n" + getActivePlayer().name + " wins!");
 		Board.populate();
 		Board.print();
 		System.exit(0);
@@ -116,8 +116,16 @@ public class MainChess {
 		}
 	}
 	
-	static Player getPlayer(boolean activeIsTrue) {
-		return player1.isActive == activeIsTrue ? player1 : player2;
+//	static Player getPlayer(boolean activeIsTrue) {
+//		return player1.isActive == activeIsTrue ? player1 : player2;
+//	}
+	
+	static Player getActivePlayer() {
+		return player1.isActive ? player1 : player2;
+	}
+	
+	static Player getInactivePlayer() {
+		return player1.isActive ? player2 : player1;
 	}
 	
 	static Player getOtherPlayer(Player inputPlayer) {

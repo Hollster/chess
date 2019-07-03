@@ -66,31 +66,31 @@ public abstract class Piece extends Point{
 				}
 		} while(!moveIsValid(PlayerInput.entryToPoint(secondPlayerInput)));
 		this.setLocation(PlayerInput.entryToPoint(secondPlayerInput));
-		capture(MainChess.getPlayer(false));
-		if(MainChess.inCheck(MainChess.getPlayer(true))) {
+		capture(MainChess.getInactivePlayer());
+		if(MainChess.inCheck(MainChess.getActivePlayer())) {
 			System.err.println("6 - Not valid, you would be in check");
-			undoMove(MainChess.getPlayer(true), previousLocation);
+			undoMove(MainChess.getActivePlayer(), previousLocation);
 			move();
 			return;
 		}
-		MainChess.getPlayer(false).updateAllPossiblePieces();
-		MainChess.getPlayer(true).updateAllPossiblePieces();
+		MainChess.getInactivePlayer().updateAllPossiblePieces();
+		MainChess.getActivePlayer().updateAllPossiblePieces();
 	}
 	
 	
 	private void undoMove(Player currentPlayer, Point previousLocation) {
 		this.setLocation(previousLocation);
 		MainChess.getOtherPlayer(currentPlayer).restorePiece();
-		MainChess.getPlayer(true).updateAllPossiblePieces();
-		MainChess.getPlayer(false).updateAllPossiblePieces();
+		MainChess.getActivePlayer().updateAllPossiblePieces();
+		MainChess.getInactivePlayer().updateAllPossiblePieces();
 	}
 	
 	private void capture(Player opponent) {
 		for(Piece piece : opponent.getPiecesOnBoard()) {
 			if(this.equals(piece)) {
 				opponent.removePiece(piece);
-				MainChess.getPlayer(true).updateAllPossiblePieces();
-				MainChess.getPlayer(false).updateAllPossiblePieces();
+				MainChess.getActivePlayer().updateAllPossiblePieces();
+				MainChess.getInactivePlayer().updateAllPossiblePieces();
 				return;
 			}
 		}

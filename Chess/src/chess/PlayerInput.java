@@ -42,18 +42,18 @@ public class PlayerInput {
 		Piece chosenPiece = null;
 		//chosenPiece = PlayerInput.getPiece();
 		do {
-			firstPlayerInput = getPlayerInput(MainChess.getPlayer(true), "Hey, " 
-					+ MainChess.getPlayer(true).name + "! Your move! Select your piece to move! "
+			firstPlayerInput = getPlayerInput(MainChess.getActivePlayer(), "Hey, " 
+					+ MainChess.getActivePlayer().name + "! Your move! Select your piece to move! "
 					+ "Enter help if you need help.");
 			checkForSpecialInput(firstPlayerInput);
 			chosenPiece = getPieceFromEntry(firstPlayerInput);
 		} while (chosenPiece == null);
-		return  chosenPiece;
+		return chosenPiece;
 	}
 	
 	private static Piece getPieceFromEntry(String playerEntry) {
 		if(Board.entryIsOnBoard(playerEntry)) {
-			for(Piece piece : MainChess.getPlayer(true).getPiecesOnBoard()) {
+			for(Piece piece : MainChess.getActivePlayer().getPiecesOnBoard()) {
 				if (piece.equals(entryToPoint(playerEntry))){
 					return piece;
 				}
@@ -73,7 +73,7 @@ public class PlayerInput {
 	}
 	
 	static String targetLocation(Piece piece) {
-		String secondPlayerInput = PlayerInput.getPlayerInput(MainChess.getPlayer(true), "Hey, " + MainChess.getPlayer(true).name + "! Your move! Select your target tile!" 
+		String secondPlayerInput = PlayerInput.getPlayerInput(MainChess.getActivePlayer(), "Hey, " + MainChess.getActivePlayer().name + "! Your move! Select your target tile!" 
 				+ "\nEnter redo to choose another tile and help if you need help");
 		PlayerInput.checkForSpecialInput(secondPlayerInput);
 		return secondPlayerInput;
@@ -112,7 +112,7 @@ public class PlayerInput {
 	private static void playerQuit() {
 		String doesPlayerWantToQuit = PlayerInput.getPlayerInput("Are you sure you want to quit? (yes / no)");
 		if("YES".equals(doesPlayerWantToQuit)) {
-			System.out.println(MainChess.getPlayer(false).name + " wins!");
+			System.out.println(MainChess.getInactivePlayer().name + " wins!");
 			System.exit(0);
 		} else if ("NO".equals(doesPlayerWantToQuit)) {
 			return;
@@ -124,7 +124,7 @@ public class PlayerInput {
 	
 	private static void itsADraw(){
 		if(checkDrawAnswers("Are you sure this is a draw? (yes / no)") 
-				&& checkDrawAnswers(MainChess.getPlayer(false).name + ", do you think this is a draw, too? (yes / no)")) {
+				&& checkDrawAnswers(MainChess.getInactivePlayer().name + ", do you think this is a draw, too? (yes / no)")) {
 			System.out.println("It's a draw!");
 			System.exit(0);
 		} else {

@@ -7,8 +7,8 @@ public class Board {
 	
 	static void populate() {
 		eraseBoard();
-		placePieces(MainChess.getPlayer(true));
-		placePieces(MainChess.getPlayer(false));
+		placePieces(MainChess.getActivePlayer());
+		placePieces(MainChess.getInactivePlayer());
 		fillEmptyTiles();
 	}
 	
