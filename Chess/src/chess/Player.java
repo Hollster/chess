@@ -10,13 +10,13 @@ public class Player {
 	boolean hasLost;
 	private ArrayList<Piece> piecesOnBoard;
 	private Piece removedPiece;
-	private King king;
+	private Piece king;
 	
 	Player(String name, String color, boolean isActive){
 		this.name = name;
 		this.color = color;
 		this.isActive = isActive;
-		this.king = "white".equals(color) ? new King(4, 7, color) : new King(4, 0, color);
+		this.king = "white".equals(color) ?  new Piece(color, 4, 7, MyType.KING) : new Piece(color, 4, 0, MyType.KING);
 		piecesOnBoard = makePieces(color);
 		removedPiece = null;
 		}
@@ -30,16 +30,17 @@ public class Player {
 			pawnRow = Board.NUMBER_OF_ROWS - 2;
 		}
 		for (int column = 0; column < Board.NUMBER_OF_COLUMNS; column++) {
-			pieces.add(new Pawn(column, pawnRow, color));
+			pieces.add(new Piece(color, column, pawnRow, MyType.PAWN));
 		}
-		pieces.add(new Rook(0, row, color));
-		pieces.add(new Knight(1,row, color));
-		pieces.add(new Bishop(2,row, color));
-		pieces.add(new Queen(3, row, color));
-		pieces.add(king);
-		pieces.add(new Bishop(5,row, color));
-		pieces.add(new Knight(6,row, color));
-		pieces.add(new Rook(7,row, color));
+		pieces.add(new Piece(color, 0, row, MyType.ROOK));
+		pieces.add(new Piece(color, 1, row, MyType.KNIGHT));
+		pieces.add(new Piece(color, 2, row, MyType.BISHOP));
+		pieces.add(new Piece(color, 3, row, MyType.QUEEN));
+		pieces.add(new Piece(color, 4, row, MyType.KING));
+		pieces.add(new Piece(color, 5, row, MyType.BISHOP));
+		pieces.add(new Piece(color, 6, row, MyType.KNIGHT));
+		pieces.add(new Piece(color, 7, row, MyType.ROOK));
+
 		return pieces;
 	}
 
@@ -51,7 +52,7 @@ public class Player {
 	}
 	
 	Point getKingPosition() {
-		return new Point(king.x, king.y);
+		return new Point(king.getLocation().x, king.getLocation().y);
 	}
 		
 	ArrayList<Piece> getPiecesOnBoard() {

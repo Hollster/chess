@@ -23,7 +23,7 @@ public class Board {
 	private static void placePieces(Player player) {
 		String color = player.color;
 		for(Piece piece: player.getPiecesOnBoard()) {
-			board[piece.x][piece.y] = " " + color.substring(0, 1) + piece.getClass().getName().substring(6, 7) + " ";
+			board[piece.getLocation().x][piece.getLocation().y] = " " + color.substring(0, 1) + piece.myType.name().substring(0, 1) + " ";
 		}
 	}
 

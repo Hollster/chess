@@ -1,6 +1,7 @@
 package chess;
-
+// die haben wahrscheinlich keine location mehr
 import java.awt.Point;
+import java.util.Arrays;
 
 public class MainChess {
 	private static Player player1;
@@ -51,7 +52,7 @@ public class MainChess {
 	
 	private static void capture(Player opponent, Point positionOfMovedPiece) {
 		for(Piece piece : opponent.getPiecesOnBoard()) {
-			if(positionOfMovedPiece.equals(piece)) {
+			if(positionOfMovedPiece.equals(piece.getLocation())) {
 				opponent.removePiece(piece);
 				opponent.updateAllPossiblePieces();
 				return;
@@ -80,12 +81,12 @@ public class MainChess {
 	}
 	
 	private static void checkForMate() {
-		Point originalPosition = new Point(); 
 		for(Piece piece: getInactivePlayer().getPiecesOnBoard()) { 
-			originalPosition.setLocation(piece.x, piece.y);
+			Point originalPosition = new Point(); 
+			originalPosition.setLocation(piece.getLocation());
 			for (Point possibleLocation : piece.possibleTargetLocations) {
 				piece.setLocation(possibleLocation);
-				capture(getActivePlayer(), piece);
+				capture(getActivePlayer(), piece.getLocation());
 				if(!inCheck(getInactivePlayer())) {
 					undoMove(getInactivePlayer(), piece, originalPosition);
 					return;

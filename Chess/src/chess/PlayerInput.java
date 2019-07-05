@@ -54,7 +54,7 @@ public class PlayerInput {
 	private static Piece getPieceFromEntry(String playerEntry) {
 		if(Board.entryIsOnBoard(playerEntry)) {
 			for(Piece piece : MainChess.getActivePlayer().getPiecesOnBoard()) {
-				if (piece.equals(entryToPoint(playerEntry))){
+				if (piece.getLocation().equals(entryToPoint(playerEntry))){
 					return piece;
 				}
 			}
@@ -72,7 +72,7 @@ public class PlayerInput {
 		return new Point(x, y);
 	}
 	
-	static String targetLocation(Piece piece) {
+	static String targetLocation(Point targetLocation) {
 		String secondPlayerInput = PlayerInput.getPlayerInput(MainChess.getActivePlayer(), "Hey, " + MainChess.getActivePlayer().name + "! Your move! Select your target tile!" 
 				+ "\nEnter redo to choose another tile and help if you need help");
 		PlayerInput.checkForSpecialInput(secondPlayerInput);
