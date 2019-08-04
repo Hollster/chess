@@ -43,9 +43,18 @@ public class MainChess {
 	static void oneTurn() {
 		Piece chosenPiece = PlayerInput.getPiece();
 		chosenPiece.move();
+		for (Piece piece : getPlayer("white").getPiecesOnBoard()) {
+			System.out.println(piece.myType.name() + piece.location);
+		}
 		checkForMate();
+		for (Piece piece : getPlayer("white").getPiecesOnBoard()) {
+			System.out.println(piece.myType.name() + piece.location);
+		}
 		if(inCheck(getInactivePlayer())) {
 			System.out.println("CHECK!");
+		}
+		for (Piece piece : getPlayer("white").getPiecesOnBoard()) {
+			System.out.println(piece.myType.name() + piece.location);
 		}
 		getInactivePlayer().deleteRemovedPiece();
 	}
